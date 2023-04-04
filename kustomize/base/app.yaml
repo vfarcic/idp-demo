@@ -1,0 +1,16 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: silly-demo
+spec:
+  id: silly-demo
+  compositionSelector:
+    matchLabels:
+      type: backend-db
+      location: local
+  parameters:
+    namespace: production
+    image: docker.io/vfarcic/silly-demo:1.1.3
+    port: 8080
+    host: silly-demo.34.138.133.150.nip.io
