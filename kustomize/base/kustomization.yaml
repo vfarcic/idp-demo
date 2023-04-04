@@ -5,7 +5,7 @@ resources:
   # - hpa.yaml
   # - ingress.yaml
   - app.yaml
-  - postgresql-password.yaml
-  # - postgresql-schema.yaml
-  - postgresql.yaml
+  # - postgresql-password.yaml
+  - schema.yaml
+  # - postgresql.yaml
   # - service.yaml
