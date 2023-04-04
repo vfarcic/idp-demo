@@ -1,11 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # - deployment.yaml
-  # - hpa.yaml
-  # - ingress.yaml
   - app.yaml
-  # - postgresql-password.yaml
   - schema.yaml
-  # - postgresql.yaml
-  # - service.yaml
