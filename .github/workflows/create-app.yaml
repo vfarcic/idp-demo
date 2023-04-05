@@ -51,11 +51,10 @@ jobs:
         run: |
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod a+x /usr/local/bin/yq
-          echo 1
           cp argocd/app-template.yaml apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
-          echo 2
-          cat ${{ inputs.name }}-${{ inputs.environment }}.yaml
-          echo 3
+          yq --inplace \".metadata.name = \\\"gitops.$INGRESS_HOST.nip.io\\\" apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
+          yq --inplace \".spec.source.repoURL = \"https://github.com/${{ inputs.repo-user }}/${{ inputs.repo-name }}.git\\\"\" apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
+          cat apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
