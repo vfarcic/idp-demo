@@ -56,7 +56,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
