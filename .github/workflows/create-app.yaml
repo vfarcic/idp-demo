@@ -51,9 +51,11 @@ jobs:
         run: |
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod a+x /usr/local/bin/yq
-          yq --version
+          echo 1
           cp argocd/app-template.yaml apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
+          echo 2
           cat ${{ inputs.name }}-${{ inputs.environment }}.yaml
+          echo 3
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
