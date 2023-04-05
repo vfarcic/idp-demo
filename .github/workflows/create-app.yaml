@@ -56,7 +56,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
@@ -67,6 +67,9 @@ jobs:
           git config --global user.email 'vfarcic@users.noreply.github.com'
           git add .
           git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
+          echo 111
+          echo ${{ secrets.GITHUB_TOKEN }}
+          echo 222
           git push
   # report-deployment:
   #   name: Report new deployment Entity
