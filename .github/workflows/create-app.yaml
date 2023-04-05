@@ -62,7 +62,8 @@ jobs:
           chmod +x scripts/create-argocd-app.sh
           ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
           git add .
-          git commit -m \"Deploy ${{ inputs.name }} to ${{ inputs.environment }}\"
+          git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
+          git push
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
