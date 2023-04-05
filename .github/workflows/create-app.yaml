@@ -53,47 +53,39 @@ on:
         type: string
         default: "small"
 jobs:
-  deploy:
+  create-app:
     runs-on: ubuntu-latest
+    name: Creating Organization Repository
     steps:
-      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+      - name: Creating GitHub Organization Repository
+        uses: repo-ctrl/create-repo-action@main 
+        id: create-repo
         with:
-          persist-credentials: false
-          fetch-depth: 0
-      - name: Create Argo CD App
-        run: |
-          chmod +x scripts/create-argocd-app.sh
-          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
-      # - uses: stefanzweifel/git-auto-commit-action@v4
-      - name: Commit changes
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add .
-          git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-  # report-deployment:
-  #   name: Report new deployment Entity
+          repo-name: '${{ inputs.repo-name }}'
+          org-admin-token: '${{ secrets.ORG_ADMIN_TOKEN }}'
+      - name: Log URL to the repo
+        run: echo "The new repo is ${{ steps.create-repo.outputs.repo-url }}"
+  # deploy-app:
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - name: Extract SHA short
-  #       run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
-  #     - name: "Report deployment Entity to port 🚢"
-  #       uses: port-labs/port-github-action@v1
+  #     - uses: actions/checkout@v3
   #       with:
-  #         clientId: ${{ secrets.PORT_CLIENT_ID }}
-  #         clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
-  #         identifier: ${{ inputs.service }}-${{ inputs.environment }}-${{ env.SHA_SHORT }}
-  #         blueprint: deployment
-  #         properties: |
-  #           {
-  #              "jobUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-  #              "deployingUser": "${{ github.actor }}",
-  #              "imageTag": "latest",
-  #              "commitSha": "${{ env.SHA_SHORT }}"
-  #           }
-  #         runId: "${{fromJson(inputs.port_payload).context.runId}}"
+  #         persist-credentials: false
+  #         fetch-depth: 0
+  #     - name: Create Argo CD App
+  #       run: |
+  #         chmod +x scripts/create-argocd-app.sh
+  #         ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
+  #     - name: Commit changes
+  #       run: |
+  #         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  #         git config --local user.name "github-actions[bot]"
+  #         git add .
+  #         git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
+  #     - name: Push changes
+  #       uses: ad-m/github-push-action@master
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         branch: ${{ github.ref }}
