@@ -1,0 +1,75 @@
+name: CI
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        required: true
+        description: "App name"
+        type: string
+      repo-user:
+        required: true
+        description: "Repository user"
+        type: string
+      repo-name:
+        required: true
+        description: "Repository name"
+        type: string
+      type:
+        required: true
+        description: "App type (backend, )"
+        type: string
+      environment:
+        required: true
+        description: "Environment to deploy app to"
+        type: string
+      port:
+        required: true
+        description: "The port of the application"
+        type: string
+      host:
+        required: true
+        description: "The host of the application"
+        type: string
+      has-db:
+        required: true
+        description: "Does the app have a database?"
+        type: boolean
+      db-version:
+        required: false
+        description: "The database version"
+        type: string
+      db-size:
+        required: false
+        description: "The database size (small, medium, large)"
+        type: string
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: echo-deploy
+        run: echo "deploy"
+
+      # ADD YOUR DEPLOYMENT LOGIC HERE!
+
+  # report-deployment:
+  #   name: Report new deployment Entity
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Extract SHA short
+  #       run: echo "SHA_SHORT=${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+  #     - name: "Report deployment Entity to port 🚢"
+  #       uses: port-labs/port-github-action@v1
+  #       with:
+  #         clientId: ${{ secrets.PORT_CLIENT_ID }}
+  #         clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+  #         identifier: ${{ inputs.service }}-${{ inputs.environment }}-${{ env.SHA_SHORT }}
+  #         blueprint: deployment
+  #         properties: |
+  #           {
+  #              "jobUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+  #              "deployingUser": "${{ github.actor }}",
+  #              "imageTag": "latest",
+  #              "commitSha": "${{ env.SHA_SHORT }}"
+  #           }
+  #         runId: "${{fromJson(inputs.port_payload).context.runId}}"
