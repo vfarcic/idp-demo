@@ -49,12 +49,8 @@ jobs:
       - uses: actions/checkout@v3
       - id: deploy
         run: |
-          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-          sudo chmod a+x /usr/local/bin/yq
-          cp argocd/app-template.yaml apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
-          yq --inplace \".metadata.name = \\\"gitops.$INGRESS_HOST.nip.io\\\" apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
-          yq --inplace \".spec.source.repoURL = \"https://github.com/${{ inputs.repo-user }}/${{ inputs.repo-name }}.git\\\"\" apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
-          cat apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
+          chmod +x scripts/create-argocd-app.sh
+          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.type }} ${{ inputs.environment }} ${{ inputs.port }} ${{ inputs.host }} ${{ inputs.has-db }} ${{ inputs.db-version }} ${{ inputs.db-size }}
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
