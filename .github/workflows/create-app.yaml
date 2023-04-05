@@ -60,7 +60,8 @@ jobs:
       - id: deploy
         run: |
           chmod +x scripts/create-argocd-app.sh
-          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.type }} ${{ inputs.environment }} ${{ inputs.port }} ${{ inputs.host }} ${{ inputs.has-db }} ${{ inputs.db-version }} ${{ inputs.db-size }}
+          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.environment }}
+          git status
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
