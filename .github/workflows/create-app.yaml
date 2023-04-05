@@ -16,18 +16,18 @@ on:
         type: string
       type:
         required: true
-        description: "App type (backend, )"
+        description: "App type (backend)"
         type: string
       environment:
         required: true
-        description: "Environment to deploy app to"
+        description: "Environment to deploy app to (production, staging, development)"
         type: string
       port:
         required: true
         description: "The port of the application"
         type: string
       host:
-        required: true
+        required: false
         description: "The host of the application"
         type: string
       has-db:
@@ -48,10 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: echo-deploy
-        run: echo "deploy"
-
-      # ADD YOUR DEPLOYMENT LOGIC HERE!
-
+        run: echo "deploy $inputs.name"
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
