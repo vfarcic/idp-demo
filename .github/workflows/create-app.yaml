@@ -48,7 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: echo-deploy
-        run: echo "deploy $inputs.name"
+        run: echo deploy ${{ inputs.name }}
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
