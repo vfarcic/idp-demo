@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
+          # ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Create Argo CD App
         run: |
@@ -75,7 +75,7 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          # github_token: ${{ secrets.TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
   # report-deployment:
   #   name: Report new deployment Entity
