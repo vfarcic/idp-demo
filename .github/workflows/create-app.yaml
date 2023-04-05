@@ -17,75 +17,31 @@ on:
         description: "Repository name"
         type: string
         default: "idp-demo-app"
-      type:
-        required: true
-        description: "App type (backend)"
-        type: string
-        default: "backend"
       environment:
         required: true
         description: "Environment to deploy app to (production, staging, development)"
         type: string
         default: "production"
-      port:
-        required: true
-        description: "The port of the application"
-        type: string
-        default: "8080"
-      host:
-        required: false
-        description: "The host of the application"
-        type: string
-        default: "acme.com"
-      has-db:
-        required: true
-        description: "Does the app have a database?"
-        type: boolean
-        default: true
-      db-version:
-        required: false
-        description: "The database version"
-        type: string
-        default: "13"
-      db-size:
-        required: false
-        description: "The database size (small, medium, large)"
-        type: string
-        default: "small"
 jobs:
-  create-app:
+  deploy-app:
     runs-on: ubuntu-latest
-    name: Creating Organization Repository
     steps:
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-      - name: Creating GitHub Organization Repository
-        uses: repo-ctrl/create-repo-action@main 
-        id: create-repo
+      - uses: actions/checkout@v3
         with:
-          repo-name: '${{ inputs.repo-name }}'
-          org-admin-token: '${{ secrets.ORG_ADMIN_TOKEN }}'
-      # - name: Log URL to the repo
-      #   run: echo "The new repo is ${{ steps.create-repo.outputs.repo-url }}"
-  # deploy-app:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         persist-credentials: false
-  #         fetch-depth: 0
-  #     - name: Create Argo CD App
-  #       run: |
-  #         chmod +x scripts/create-argocd-app.sh
-  #         ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
-  #     - name: Commit changes
-  #       run: |
-  #         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-  #         git config --local user.name "github-actions[bot]"
-  #         git add .
-  #         git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
-  #     - name: Push changes
-  #       uses: ad-m/github-push-action@master
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         branch: ${{ github.ref }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Create Argo CD App
+        run: |
+          chmod +x scripts/create-argocd-app.sh
+          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
+      - name: Commit changes
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Deploy ${{ inputs.name }} to ${{ inputs.environment }}"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
