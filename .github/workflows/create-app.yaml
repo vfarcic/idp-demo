@@ -47,8 +47,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - id: echo-deploy
-        run: echo deploy ${{ inputs.name }}
+      - id: deploy
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+          yq --version
+          cp argocd/app-template.yaml apps/${{ inputs.name }}-${{ inputs.environment }}.yaml
+          cat ${{ inputs.name }}-${{ inputs.environment }}.yaml
   # report-deployment:
   #   name: Report new deployment Entity
   #   runs-on: ubuntu-latest
