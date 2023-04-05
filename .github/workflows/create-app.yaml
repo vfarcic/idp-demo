@@ -6,42 +6,52 @@ on:
         required: true
         description: "App name"
         type: string
+        default: "idp-demo"
       repo-user:
         required: true
         description: "Repository user"
         type: string
+        default: "vfarcic"
       repo-name:
         required: true
         description: "Repository name"
         type: string
+        default: "idp-demo-app"
       type:
         required: true
         description: "App type (backend)"
         type: string
+        default: "backend"
       environment:
         required: true
         description: "Environment to deploy app to (production, staging, development)"
         type: string
+        default: "production"
       port:
         required: true
         description: "The port of the application"
         type: string
+        default: "8080"
       host:
         required: false
         description: "The host of the application"
         type: string
+        default: "acme.com"
       has-db:
         required: true
         description: "Does the app have a database?"
         type: boolean
+        default: true
       db-version:
         required: false
         description: "The database version"
         type: string
+        default: "13"
       db-size:
         required: false
         description: "The database size (small, medium, large)"
         type: string
+        default: "small"
 jobs:
   deploy:
     runs-on: ubuntu-latest
