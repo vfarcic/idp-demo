@@ -13,36 +13,37 @@
           "default": "https://git.com",
           "description": "The link to the GitHub repo"
         },
-        "on-call": {
-          "type": "string",
-          "icon": "Okta",
-          "title": "On Call",
-          "format": "email",
-          "default": "joe.doe@gmail.com"
-        },
         "language": {
           "type": "string",
           "icon": "Git",
           "title": "Language",
           "default": "Go",
           "enum": [
-            "Go",
-            "Python",
-            "Node",
-            "Java"
+            "Go"
           ],
           "enumColors": {
-            "Go": "red",
-            "Python": "green",
-            "Node": "blue",
-            "Java": "yellow"
+            "Go": "red"
           }
         },
-        "issues": {
-          "type": "number",
-          "icon": "DevopsTool",
-          "title": "Number of GitHub Issues",
-          "default": 42
+        "host": {
+          "type": "string",
+          "title": "Host",
+          "description": "Host"
+        },
+        "db-version": {
+          "type": "string",
+          "title": "DB Version",
+          "description": "DB version"
+        },
+        "db-size": {
+          "type": "string",
+          "title": "DB Size",
+          "enum": [
+            "Small",
+            "Medium",
+            "Large"
+          ],
+          "description": "DB size"
         },
         "availableReplicas": {
           "type": "number",
@@ -74,8 +75,8 @@
         }
       },
       "required": [
-        "on-call",
-        "url"
+        "url",
+        "language"
       ]
     },
     "mirrorProperties": {},
