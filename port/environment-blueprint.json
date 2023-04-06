@@ -1,0 +1,20 @@
+{
+    "identifier": "environment",
+    "description": "This blueprint represents an environment",
+    "title": "Environment",
+    "icon": "Environment",
+    "schema": {
+      "properties": {}
+    },
+    "mirrorProperties": {},
+    "calculationProperties": {},
+    "relations": {
+      "cluster": {
+        "target": "cluster",
+        "many": false,
+        "required": true,
+        "title": "Cluster"
+      }
+    }
+  }
+  

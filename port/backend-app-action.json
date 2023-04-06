@@ -1,0 +1,96 @@
+[
+  {
+    "identifier": "create-backend",
+    "title": "Create Backend App",
+    "userInputs": {
+      "properties": {
+        "repo-user": {
+          "type": "string",
+          "title": "Repo User",
+          "default": "vfarcic"
+        },
+        "repo-name": {
+          "type": "string",
+          "title": "Repo Name",
+          "default": ""
+        },
+        "image-repo": {
+          "type": "string",
+          "title": "Image repository",
+          "default": ""
+        },
+        "environment": {
+          "type": "string",
+          "title": "Environment",
+          "enum": ["production", "staging", "development"],
+          "default": "production"
+        },
+        "host": {
+          "type": "string",
+          "title": "Host",
+          "default": "my-app.acme.com"
+        }
+      },
+      "required": ["repo-user", "repo-name", "environment", "port"]
+    },
+    "invocationMethod": {
+      "type": "WEBHOOK",
+      "url": "https://example.com"
+    },
+    "trigger": "CREATE",
+    "description": "Create a new backend application."
+  },
+  {
+    "identifier": "create-backend-db",
+    "title": "Create Backend App With DB",
+    "userInputs": {
+      "properties": {
+        "repo-user": {
+          "type": "string",
+          "title": "Repo User",
+          "default": "vfarcic"
+        },
+        "repo-name": {
+          "type": "string",
+          "title": "Repo Name",
+          "default": ""
+        },
+        "image-repo": {
+          "type": "string",
+          "title": "Image repository",
+          "default": ""
+        },
+        "environment": {
+          "type": "string",
+          "title": "Environment",
+          "enum": ["production", "staging", "development"],
+          "default": "production"
+        },
+        "host": {
+          "type": "string",
+          "title": "Host",
+          "default": "my-app.acme.com"
+        },
+        "db-version": {
+          "type": "string",
+          "title": "Database version",
+          "default": "13"
+        },
+        "db-size": {
+          "type": "string",
+          "title": "Database size (small, medium, large)",
+          "enum": ["small", "medium", "large"],
+          "default": "medium"
+        }
+      },
+      "required": ["repo-user", "repo-name", "environment", "port"]
+    },
+    "invocationMethod": {
+      "type": "WEBHOOK",
+      "url": "https://example.com"
+    },
+    "trigger": "CREATE",
+    "description": "Create a new backend application with a DB."
+  }
+]
+  

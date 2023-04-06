@@ -1,0 +1,92 @@
+{
+    "identifier": "backend-app",
+    "description": "This blueprint represents a backend application",
+    "title": "Backend App",
+    "icon": "Microservice",
+    "schema": {
+      "properties": {
+        "url": {
+          "type": "string",
+          "title": "Github URL",
+          "icon": "Github",
+          "format": "url",
+          "default": "https://git.com",
+          "description": "The link to the GitHub repo"
+        },
+        "on-call": {
+          "type": "string",
+          "icon": "Okta",
+          "title": "On Call",
+          "format": "email",
+          "default": "joe.doe@gmail.com"
+        },
+        "language": {
+          "type": "string",
+          "icon": "Git",
+          "title": "Language",
+          "default": "Go",
+          "enum": [
+            "Go",
+            "Python",
+            "Node",
+            "Java"
+          ],
+          "enumColors": {
+            "Go": "red",
+            "Python": "green",
+            "Node": "blue",
+            "Java": "yellow"
+          }
+        },
+        "issues": {
+          "type": "number",
+          "icon": "DevopsTool",
+          "title": "Number of GitHub Issues",
+          "default": 42
+        },
+        "availableReplicas": {
+          "type": "number",
+          "title": "Running Replicas",
+          "description": "Current running replica count"
+        },
+        "labels": {
+          "type": "object",
+          "title": "Labels",
+          "description": "Labels of the workload"
+        },
+        "containers": {
+          "type": "array",
+          "title": "Containers",
+          "default": [],
+          "description": "The containers for each pod instance of the workload"
+        },
+        "isHealthy": {
+          "type": "string",
+          "enum": [
+            "Healthy",
+            "Unhealthy"
+          ],
+          "enumColors": {
+            "Healthy": "green",
+            "Unhealthy": "red"
+          },
+          "title": "Workload Health"
+        }
+      },
+      "required": [
+        "on-call",
+        "url"
+      ]
+    },
+    "mirrorProperties": {},
+    "calculationProperties": {},
+    "relations": {
+      "environment": {
+        "target": "environment",
+        "many": false,
+        "required": true,
+        "title": "Environment"
+      }
+    }
+  }
+  

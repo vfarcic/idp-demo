@@ -2,11 +2,6 @@ name: Create App
 on:
   workflow_dispatch:
     inputs:
-      name:
-        required: true
-        description: "App name"
-        type: string
-        default: "idp-demo"
       repo-user:
         required: true
         description: "Repository user"
@@ -17,11 +12,31 @@ on:
         description: "Repository name"
         type: string
         default: "idp-demo-app"
+      image-repo:
+        required: true
+        description: "Image repository"
+        type: string
+        default: "docker.io/vfarcic"
       environment:
         required: true
         description: "Environment to deploy app to (production, staging, development)"
         type: string
         default: "production"
+      host:
+        required: true
+        description: "Application host name"
+        type: string
+        default: "acme.com"
+      db-version:
+        required: true
+        description: "Database version"
+        type: string
+        default: "13"
+      db-size:
+        required: true
+        description: "Database size (small, medium, large)"
+        type: string
+        default: "medium"
 jobs:
   deploy-app:
     runs-on: ubuntu-latest
@@ -30,10 +45,14 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Create repo
+        run: |
+          chmod +x scripts/create-repo.sh
+          ./scripts/create-repo.sh ${{ secrets.ORG_GITHUB_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
-          ./scripts/create-argocd-app.sh ${{ inputs.name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
+          ./scripts/create-argocd-app.sh ${{ inputs.repo-name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
       - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
