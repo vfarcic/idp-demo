@@ -7,13 +7,13 @@ DB_VERSION=$6
 DB_SIZE=$7
 
 echo "xxx"
-echo $1
-echo $2
-echo $3
-echo $4
-echo $5
-echo $6
-echo $7
+echo GITHUB_TOKEN $1
+echo GITHUB_USER $2
+echo APP $3
+echo IMAGE_REPO $4
+echo HOST $5
+echo DB_VERSION $6
+echo DB_SIZE $7
 echo "xxx"
 
 curl -fsSL https://download.devstream.io/download.sh | bash
