@@ -1,20 +1,10 @@
-GITHUB_TOKEN=$1
-GITHUB_USER=$2
-APP=$3
-IMAGE_REPO=$4
-HOST=$5
-DB_VERSION=$6
-DB_SIZE=$7
-
-echo "xxx"
-echo GITHUB_TOKEN $GITHUB_TOKEN
-echo GITHUB_USER $GITHUB_USER
-echo APP $APP
-echo IMAGE_REPO $IMAGE_REPO
-echo HOST $HOST
-echo DB_VERSION $DB_VERSION
-echo DB_SIZE $DB_SIZE
-echo "xxx"
+export GITHUB_TOKEN=$1
+export GITHUB_USER=$2
+export APP=$3
+export IMAGE_REPO=$4
+export HOST=$5
+export DB_VERSION=$6
+export DB_SIZE=$7
 
 curl -fsSL https://download.devstream.io/download.sh | bash
 chmod +x dtm
