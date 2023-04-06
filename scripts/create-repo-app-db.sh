@@ -6,7 +6,7 @@ HOST=$5
 DB_VERSION=$6
 DB_SIZE=$7
 
-sh -c "$(curl -fsSL https://download.devstream.io/download.sh)"
+curl -fsSL https://download.devstream.io/download.sh | bash
 ls -la
 chmod +x dtm
 curl -o config.yaml https://raw.githubusercontent.com/vfarcic/template-go-backend-db-google/main/config.yaml
