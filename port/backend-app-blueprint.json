@@ -45,33 +45,10 @@
           ],
           "description": "DB size"
         },
-        "availableReplicas": {
-          "type": "number",
-          "title": "Running Replicas",
-          "description": "Current running replica count"
-        },
         "labels": {
           "type": "object",
           "title": "Labels",
           "description": "Labels of the workload"
-        },
-        "containers": {
-          "type": "array",
-          "title": "Containers",
-          "default": [],
-          "description": "The containers for each pod instance of the workload"
-        },
-        "isHealthy": {
-          "type": "string",
-          "enum": [
-            "Healthy",
-            "Unhealthy"
-          ],
-          "enumColors": {
-            "Healthy": "green",
-            "Unhealthy": "red"
-          },
-          "title": "Workload Health"
         }
       },
       "required": [

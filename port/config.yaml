@@ -1,0 +1,89 @@
+resources:
+  - kind: v1/namespaces
+    selector:
+      query: .metadata.name | contains("kube-system")
+    port:
+      entity:
+        mappings:
+          - identifier: '"dot"'
+            title: '"dot"'
+            blueprint: '"cluster"'
+  - kind: v1/namespaces
+    selector:
+      query: .metadata.environment == "true"
+    port:
+      entity:
+        mappings:
+          - identifier: .metadata.name + "-" + "dot"
+            title: .metadata.labels.environment
+            blueprint: '"environment"'
+            relations:
+              cluster: '"dot"'
+  - kind: v1/namespaces
+    selector:
+      query: .metadata.name | startswith("kube") | not
+    port:
+      entity:
+        mappings:
+          - identifier: .metadata.name + "-" + "dot"
+            title: .metadata.name
+            blueprint: '"namespace"'
+            properties:
+              creationTimestamp: .metadata.creationTimestamp
+              labels: .metadata.labels
+            relations:
+              Cluster: '"dot"'
+  - kind: devopstoolkitseries.com/v1alpha1/appclaims
+    selector:
+      query: .spec.compositionSelector.matchLabels.type == "backend-db-google"
+    port:
+      entity:
+        mappings:
+          - identifier: .metadata.name + "-appclaim-" + .metadata.namespace + "-" + "dot"
+            title: .metadata.name
+            icon: '"Deployment"'
+            blueprint: '"backend-app"'
+            properties:
+              url: '"https://github.com/" + .metadata.annotations.gitHubOrg + "/" + .metadata.annotations.gitHubRepo'
+              language: go
+              host: .spec.parameters.host
+              db-version: .spec.parameters.db.version
+              db-size: .spec.parameters.db.size
+              labels: .metadata.labels
+            relations:
+              environment: .metadata.namespace + "-" + "dot"
+  - kind: v1/nodes
+    port:
+      entity:
+        mappings:
+          - identifier: (.metadata.name) | (split(".")|join("_")) + "-" + "dot"
+            title: .metadata.name + "-" + "dot"
+            icon: '"Node"'
+            blueprint: '"node"'
+            properties:
+              creationTimestamp: .metadata.creationTimestamp
+              totalCPU: .status.allocatable.cpu
+              totalMemory: .status.allocatable.memory
+              labels: .metadata.labels
+              kubeletVersion: .status.nodeInfo.kubeletVersion | split("-") | .[0]
+              ready: .status.conditions[] | select(.type == "Ready") | .status
+            relations:
+              Cluster: '"dot"'
+  - kind: v1/pods
+    selector:
+      query: .metadata.namespace | startswith("kube") | not 
+    port:
+      entity:
+        mappings:
+          - identifier: .metadata.name + "-" + .metadata.namespace + "-" + "dot"
+            title: .metadata.name
+            icon: '"Microservices"'
+            blueprint: '"pod"'
+            properties:
+              startTime: .status.startTime
+              phase: .status.phase
+              labels: .metadata.labels
+              containers: (.spec.containers | map({image, resources})) + .status.containerStatuses | group_by(.image) | map(add)
+              conditions: .status.conditions
+            relations:
+              Node: (.spec.nodeName) | (split(".")|join("_")) + "-" + "dot"
