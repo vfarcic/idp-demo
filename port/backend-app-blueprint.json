@@ -39,9 +39,9 @@
           "type": "string",
           "title": "DB Size",
           "enum": [
-            "Small",
-            "Medium",
-            "Large"
+            "small",
+            "medium",
+            "large"
           ],
           "description": "DB size"
         },

@@ -35,12 +35,12 @@ spec:
                         blueprint: '"cluster"'
               - kind: v1/namespaces
                 selector:
-                  query: .metadata.environment == "true"
+                  query: .metadata.annotations.environment == "true"
                 port:
                   entity:
                     mappings:
                       - identifier: .metadata.name + "-" + "dot"
-                        title: .metadata.labels.environment
+                        title: .metadata.name
                         blueprint: '"environment"'
                         relations:
                           cluster: '"dot"'
@@ -76,7 +76,7 @@ spec:
                           db-size: .spec.parameters.db.size
                           labels: .metadata.labels
                         relations:
-                          environment: .metadata.namespace + "-" + "dot"
+                          environment: .metadata.name + "-" + "dot"
               - kind: v1/nodes
                 port:
                   entity:
