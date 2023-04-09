@@ -18,8 +18,8 @@ spec:
         installCRDs: true
         secret:
           secrets:
-            portClientId: CLIENT_ID
-            portClientSecret: CLIENT_SECRET
+            portClientId: Fpiyug0wv0MUfekBAh1yzhm4EtbQOC4m
+            portClientSecret: NG9gRRCVAHer9WXtGgspjbceKwS61R3rkNEvuzvxIiCJEbz3ckYXv8nNJbMAvm7y
         configMap:
           name: config-k8s.yaml
           config: |-
