@@ -113,7 +113,7 @@ spec:
                           Node: (.spec.nodeName) | (split(".")|join("_")) + "-" + "dot"
   destination:
     server: https://kubernetes.default.svc
-    namespace: kyverno
+    namespace: port-k8s-exporter
   syncPolicy:
     automated:
       selfHeal: true
