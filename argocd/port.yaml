@@ -21,6 +21,7 @@ spec:
             portClientId: CLIENT_ID
             portClientSecret: CLIENT_SECRET
         configMap:
+          name: config-k8s.yaml
           config:
             resources:
               - kind: v1/namespaces
