@@ -55,5 +55,6 @@ spec:
         pattern:
           spec:
             parameters:
-              size: "!small"
+              db:
+                size: "!small"
 
