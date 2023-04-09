@@ -33,11 +33,11 @@
           "type": "string",
           "title": "DB Size",
           "enum": [
-            "Small",
-            "Medium",
-            "Large"
+            "small",
+            "medium",
+            "large"
           ],
-          "default": "Medium"
+          "default": "medium"
         },
         "environment": {
           "type": "string",
