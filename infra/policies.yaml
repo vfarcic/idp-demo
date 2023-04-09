@@ -1,0 +1,59 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: db-cluster
+  annotations:
+    policies.kyverno.io/title: Require Small, Medium, or Large DB size
+    policies.kyverno.io/category: DB
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: AppClaim
+    policies.kyverno.io/description: >-
+      Apps and AppClaims must have size small, medium, or large database size
+spec:
+  validationFailureAction: enforce
+  background: true
+  rules:
+    - name: db-must-have-proper-size
+      match:
+        resources:
+          kinds:
+            - AppClaim
+            - App
+      validate:
+        message: Apps and AppClaims must have size small, medium, or large database size
+        pattern:
+          spec:
+            parameters:
+              db:
+                size: "small|medium|large"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: db-production
+  annotations:
+    policies.kyverno.io/title: Require Medium or Large DB size
+    policies.kyverno.io/category: DB
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: AppClaim
+    policies.kyverno.io/description: >-
+      Apps and AppClaims with small database instances are not reliable and thus cannot be used in production.
+spec:
+  validationFailureAction: enforce
+  background: true
+  rules:
+    - name: db-cannot-be-small
+      match:
+        resources:
+          kinds:
+            - AppClaim
+          namespaces:
+            - production
+      validate:
+        message: AppClaims with small database instances are not reliable and thus cannot be used in production.
+        pattern:
+          spec:
+            parameters:
+              size: "!small"
+
