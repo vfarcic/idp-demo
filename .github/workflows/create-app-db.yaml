@@ -48,8 +48,8 @@ jobs:
       - name: Create repo
         run: |
           chmod +x scripts/create-repo-app-db.sh
-          echo ./scripts/create-repo-app-db.sh ${{ secrets.ORG_GITHUB_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
-          ./scripts/create-repo-app-db.sh ${{ secrets.ORG_GITHUB_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
+          echo ./scripts/create-repo-app-db.sh ${{ secrets.ORG_ADMIN_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
+          ./scripts/create-repo-app-db.sh ${{ secrets.ORG_ADMIN_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
