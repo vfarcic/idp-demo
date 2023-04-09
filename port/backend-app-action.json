@@ -4,6 +4,11 @@
     "title": "Create Backend App With DB",
     "userInputs": {
       "properties": {
+        "repo-org": {
+          "type": "string",
+          "title": "Repo User",
+          "default": "devopsparadox"
+        },
         "repo-user": {
           "type": "string",
           "title": "Repo User",
@@ -46,7 +51,7 @@
           "default": "production"
         }
       },
-      "required": ["repo-user", "repo-name", "image-repo", "host", "db-version", "db-size", "environment"]
+      "required": ["repo-org", "repo-user", "repo-name", "image-repo", "host", "db-version", "db-size", "environment"]
     },
     "invocationMethod": {
       "type": "GITHUB",

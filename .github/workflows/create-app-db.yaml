@@ -2,6 +2,11 @@ name: Create App With DB
 on:
   workflow_dispatch:
     inputs:
+      repo-org:
+        required: true
+        description: "Repository organization"
+        type: string
+        default: "devopsparadox"
       repo-user:
         required: true
         description: "Repository user"
@@ -48,7 +53,7 @@ jobs:
       - name: Create repo
         run: |
           chmod +x scripts/create-repo-app-db.sh
-          ./scripts/create-repo-app-db.sh ${{ secrets.ORG_ADMIN_TOKEN }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
+          ./scripts/create-repo-app-db.sh ${{ secrets.ORG_ADMIN_TOKEN }} ${{ inputs.repo-org }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.image-repo }} ${{ inputs.host }} ${{ inputs.db-version }} ${{ inputs.db-size }}
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
