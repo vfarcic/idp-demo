@@ -52,7 +52,7 @@
       "type": "GITHUB",
       "org": "vfarcic",
       "repo": "idp-demo",
-      "workflow": "create-app.yaml",
+      "workflow": "create-app-db.yaml",
       "omitPayload": true
     },
     "trigger": "CREATE",
