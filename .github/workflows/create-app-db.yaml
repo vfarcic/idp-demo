@@ -57,7 +57,7 @@ jobs:
       - name: Create Argo CD App
         run: |
           chmod +x scripts/create-argocd-app.sh
-          ./scripts/create-argocd-app.sh ${{ inputs.repo-name }} ${{ inputs.repo-user }} ${{ inputs.repo-name }} ${{ inputs.environment }}
+          ./scripts/create-argocd-app.sh ${{ inputs.repo-name }} ${{ inputs.repo-org }} ${{ inputs.repo-name }} ${{ inputs.environment }}
       - name: Commit changes
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -47,7 +47,7 @@
         "environment": {
           "type": "string",
           "title": "Environment",
-          "enum": ["production", "staging", "development"],
+          "enum": ["production"],
           "default": "production"
         }
       },
@@ -55,7 +55,7 @@
     },
     "invocationMethod": {
       "type": "GITHUB",
-      "org": "vfarcic",
+      "org": "devopsparadox",
       "repo": "idp-demo",
       "workflow": "create-app-db.yaml",
       "omitPayload": true
