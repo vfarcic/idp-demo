@@ -5,10 +5,10 @@ gum style \
 	--margin "1 2" --padding "2 4" \
 	'Destroy all the resources created for the TODO: video.'
 
-gum confirm "
+gum confirm '
 Are you ready to start?
 Feel free to say "No" and inspect the script if you prefer destroying resources manually.
-" || exit 0
+' || exit 0
 
 ################
 # Requirements #

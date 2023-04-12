@@ -7,10 +7,10 @@ gum style \
     '
 For now, the demo works only in Google Cloud.' \
 
-gum confirm "
+gum confirm '
 Are you ready to start?
 Feel free to say "No" and inspect the script if you prefer setting up resources manually.
-" || exit 0
+' || exit 0
 
 ################
 # Requirements #
