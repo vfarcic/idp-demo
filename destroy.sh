@@ -7,7 +7,7 @@ gum style \
 
 gum confirm "
 Are you ready to start?
-Feel free to say "No" and inspect the script destroy.sh if you prefer destroying resources manually.
+Feel free to say "No" and inspect the script if you prefer destroying resources manually.
 " || exit 0
 
 ################

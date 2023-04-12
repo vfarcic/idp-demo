@@ -9,7 +9,7 @@ For now, the demo works only in Google Cloud.' \
 
 gum confirm "
 Are you ready to start?
-Feel free to say "No" and inspect the script setup.sh if you prefer setting up resources manually.
+Feel free to say "No" and inspect the script if you prefer setting up resources manually.
 " || exit 0
 
 ################
