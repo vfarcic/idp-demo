@@ -4,8 +4,6 @@ gum style \
 	--foreground 212 --border-foreground 212 --border double \
 	--margin "1 2" --padding "2 4" \
 	'Setup for the TODO: video.' \
-    '
-For now, the demo works only in Google Cloud.' \
 
 gum confirm '
 Are you ready to start?
@@ -37,6 +35,7 @@ Do you have those tools installed?
 
 echo "
 Which Hyperscaler do you want to use?"
+
 HYPERSCALER=$(gum choose "google" "aws" "azure")
 
 echo HYPERSCALER=$HYPERSCALER >> .env
@@ -45,13 +44,15 @@ if [[ "$HYPERSCALER" != "google" ]]; then
     gum style \
         --foreground 212 --border-foreground 212 --border double \
         --margin "1 2" --padding "2 4" \
-        'Unfortunately, the demo currently only works in Google Cloud.' \
+        'Unfortunately, the demo currently works only in Google Cloud.' \
         '
 Please let me know in the comments of the video if you would like
 me to add the commands for AWS or Azure.' \
         '
 I will do my best to add the commands if there is interest or you
 can create a pull request if you would like to contribute.'
+
+    exit 0
 fi
 
 ###############
@@ -219,7 +220,11 @@ As a result, you might experience delays or errors like
 If that happens, wait for a while (e.g., 1h) for the control
 plane nodes to be automatically changed for larger ones.'
 
-    # gum spin --spinner line --title "Waiting for GKE control plane nodes to resize..." -- sleep 1800
+    '
+This issue will soon be resolved and, when that happens, I will
+remove this message and the following sleep command.'
+
+    gum spin --spinner line --title "Waiting for GKE control plane nodes to resize..." -- sleep 1800
 
     echo "apiVersion: gcp.upbound.io/v1beta1
 kind: ProviderConfig
