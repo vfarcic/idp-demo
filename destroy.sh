@@ -28,10 +28,10 @@ Do you have those tools installed?
 " || exit 0
 
 ###########
-# Destroy #
+# Destroy #
 ###########
 
- source .env
+source .env
 
 gh repo view $GITHUB_ORG/idp-demo-app --web
 
@@ -58,15 +58,3 @@ Press the enter key to continue."
 if [[ "$HYPERSCALER" == "google" ]]; then
   gcloud projects delete $PROJECT_ID
 fi
-
-#############
-# Setup AWS #
-#############
-
-# TODO:
-
-###############
-# Setup Azure #
-###############
-
-# TODO:

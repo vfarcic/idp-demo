@@ -31,6 +31,29 @@ gum confirm "
 Do you have those tools installed?
 " || exit 0
 
+################
+# Hyperscalers #
+################
+
+echo "
+Which Hyperscaler do you want to use?"
+HYPERSCALER=$(gum choose "google" "aws" "azure")
+
+echo HYPERSCALER=$HYPERSCALER >> .env
+
+if [[ "$HYPERSCALER" != "google" ]]; then
+    gum style \
+        --foreground 212 --border-foreground 212 --border double \
+        --margin "1 2" --padding "2 4" \
+        'Unfortunately, the demo currently only works in Google Cloud.' \
+        '
+Please let me know in the comments of the video if you would like
+me to add the commands for AWS or Azure.' \
+        '
+I will do my best to add the commands if there is interest or you
+can create a pull request if you would like to contribute.'
+fi
+
 ###############
 # GitHub Repo #
 ###############
@@ -72,14 +95,6 @@ Choose \"No\" if you already have it.
 
 export KUBECONFIG=$PWD/kubeconfig.yaml
 echo KUBECONFIG=$KUBECONFIG >> .env
-
-################
-# Hyperscalers #
-################
-
-HYPERSCALER=$(gum choose "google" "aws" "azure")
-
-echo HYPERSCALER=$HYPERSCALER >> .env
 
 ################
 # Google Cloud #
