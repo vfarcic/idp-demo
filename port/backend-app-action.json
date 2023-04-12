@@ -47,11 +47,22 @@
         "environment": {
           "type": "string",
           "title": "Environment",
-          "enum": ["production"],
+          "enum": [
+            "production"
+          ],
           "default": "production"
         }
       },
-      "required": ["repo-org", "repo-user", "repo-name", "image-repo", "host", "db-version", "db-size", "environment"]
+      "required": [
+        "repo-org",
+        "repo-user",
+        "repo-name",
+        "image-repo",
+        "host",
+        "db-version",
+        "db-size",
+        "environment"
+      ]
     },
     "invocationMethod": {
       "type": "GITHUB",
@@ -64,4 +75,3 @@
     "description": "Create a new backend application with a DB."
   }
 ]
-  
