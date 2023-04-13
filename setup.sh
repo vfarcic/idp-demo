@@ -1,30 +1,35 @@
 #!/bin/sh
+set -e
 
 gum style \
 	--foreground 212 --border-foreground 212 --border double \
 	--margin "1 2" --padding "2 4" \
-	'Setup for the TODO: video.' \
+	'Setup for the TODO: video.'
 
 gum confirm '
 Are you ready to start?
 Feel free to say "No" and inspect the script if you prefer setting up resources manually.
 ' || exit 0
 
+rm -f .env
+
 ################
 # Requirements #
 ################
 
-echo "You will need following tools installed:"
 echo "
-|Name            |Command|Required             |More info                                            |
-|----------------|-------|---------------------|-----------------------------------------------------|
-|Charm Gum       |gum    |Yes                  |\"https://github.com/charmbracelet/gum#installation\"|
-|gitHub CLi      |gh     |Yes                  |\"https://youtu.be/BII6ZY2Rnlc\"                     |
-|jq              |jq     |Yes                  |\"https://stedolan.github.io/jq/download\"           |
-|yq              |yq     |Yes                  |\"https://github.com/mikefarah/yq#install\"          |
-|Google Cloud CLI|gcloud |If using Google Cloud|\"https://cloud.google.com/sdk/docs/install\"        |
-" \
-    | gum format
+## You will need following tools installed:
+|Name            |Required             |More info                                          |
+|----------------|---------------------|---------------------------------------------------|
+|Charm Gum       |Yes                  |'https://github.com/charmbracelet/gum#installation'|
+|gitHub CLi      |Yes                  |'https://youtu.be/BII6ZY2Rnlc'                     |
+|jq              |Yes                  |'https://stedolan.github.io/jq/download'           |
+|yq              |Yes                  |'https://github.com/mikefarah/yq#install'          |
+|Google Cloud CLI|If using Google Cloud|'https://cloud.google.com/sdk/docs/install'        |
+|AWS CLI         |If using AWS         |'https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html'|
+|eksctl          |If using AWS         |'https://eksctl.io/introduction/#installation'     |
+" | gum format
+
 gum confirm "
 Do you have those tools installed?
 " || exit 0
@@ -40,14 +45,14 @@ HYPERSCALER=$(gum choose "google" "aws" "azure")
 
 echo HYPERSCALER=$HYPERSCALER >> .env
 
-if [[ "$HYPERSCALER" != "google" ]]; then
+if [[ "$HYPERSCALER" == "azure" ]]; then
     gum style \
         --foreground 212 --border-foreground 212 --border double \
         --margin "1 2" --padding "2 4" \
-        'Unfortunately, the demo currently works only in Google Cloud.' \
+        'Unfortunately, the demo currently does NOT work in Azure.' \
         '
 Please let me know in the comments of the video if you would like
-me to add the commands for AWS or Azure.' \
+me to add the commands for Azure.' \
         '
 I will do my best to add the commands if there is interest or you
 can create a pull request if you would like to contribute.'
@@ -59,13 +64,21 @@ fi
 # GitHub Repo #
 ###############
 
-export GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)")
+echo
+echo
+
+GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)")
 echo GITHUB_ORG=$GITHUB_ORG >> .env
 
-export GITHUB_USER=$(gum input --placeholder "GitHub username")
+GITHUB_USER=$(gum input --placeholder "GitHub username")
+
 gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
+
 cd idp-demo
+
 gh repo set-default ${GITHUB_ORG}/idp-demo
+
+cd ..
 
 gum confirm "
 We need to authorize gc CLI to manage your secrets.
@@ -146,13 +159,13 @@ Press the enter key to continue."
 
     echo K8S_VERSION=$K8S_VERSION >> .env
 
-    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 15
+    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 30
 
     gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type n1-standard-4 --num-nodes 1 --cluster-version ${K8S_VERSION} --node-version ${K8S_VERSION}
 
     gcloud container clusters get-credentials dot --project ${PROJECT_ID} --region us-east1
 
-    gum spin --spinner line --title "Waiting for the container to be available..." -- sleep 5
+    gum spin --spinner line --title "Waiting for the cluster to be available..." -- sleep 30
 
     kubectl create namespace crossplane-system
 
@@ -170,7 +183,7 @@ Press the enter key to continue."
 
     kubectl --namespace external-secrets create secret generic google --from-file=credentials=account.json
 
-    yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" eso/secret-store-google.yaml
+    yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" idp-demo/eso/secret-store-google.yaml
 
 fi
 
@@ -178,7 +191,36 @@ fi
 # Setup AWS #
 #############
 
-# TODO:
+if [[ "$HYPERSCALER" == "aws" ]]; then
+
+    echo
+
+    AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID")
+
+    AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key")
+
+    AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID")
+
+    eksctl create cluster --config-file idp-demo/eksctl-config.yaml
+
+    eksctl create addon --name aws-ebs-csi-driver --cluster dot --service-account-role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/AmazonEKS_EBS_CSI_DriverRole --force
+
+    kubectl create namespace crossplane-system
+
+    echo "[default]
+aws_access_key_id = $AWS_ACCESS_KEY_ID
+aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
+" >aws-creds.conf
+
+    kubectl --namespace crossplane-system create secret generic aws-creds --from-file creds=./aws-creds.conf
+
+    aws secretsmanager create-secret --name production-postgresql --region us-east-1 --secret-string '{"password": "YouWillNeverFindOut"}'
+
+    kubectl create namespace external-secrets
+
+    kubectl --namespace external-secrets create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
+
+fi
 
 ###############
 # Setup Azure #
@@ -196,13 +238,13 @@ helm repo update
 
 helm upgrade --install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace --wait
 
-kubectl apply --filename crossplane-config/provider-kubernetes-incluster.yaml
+kubectl apply --filename idp-demo/crossplane-config/provider-kubernetes-incluster.yaml
 
-kubectl apply --filename crossplane-config/config-sql.yaml
+kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
-kubectl apply --filename crossplane-config/config-app.yaml
+kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-kubectl apply --filename crossplane-config/provider-$HYPERSCALER-official.yaml
+kubectl apply --filename idp-demo/crossplane-config/provider-$HYPERSCALER-official.yaml
 
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
@@ -218,13 +260,15 @@ As a result, you might experience delays or errors like
 "connection refused" or "TLS handshake timeout2 (among others).' \
     '
 If that happens, wait for a while (e.g., 1h) for the control
-plane nodes to be automatically changed for larger ones.'
-
+plane nodes to be automatically changed for larger ones.' \
     '
 This issue will soon be resolved and, when that happens, I will
-remove this message and the following sleep command.'
+remove this message and the sleep command that follows.' \
+    '
+Grab a cup of coffee and watch an episode of your favorite
+series on Netflix.'
 
-    gum spin --spinner line --title "Waiting for GKE control plane nodes to resize..." -- sleep 1800
+    gum spin --spinner line --title "Waiting for GKE control plane nodes to resize (1h approx.)..." -- sleep 3600
 
     echo "apiVersion: gcp.upbound.io/v1beta1
 kind: ProviderConfig
@@ -240,7 +284,7 @@ spec:
       key: creds" \
     | kubectl apply --filename -
 else
-    echo "TODO: AWS and Azure"
+    kubectl apply --filename crossplane-config/provider-config-$HYPERSCALER-official.yaml
 fi
 
 #################
@@ -250,10 +294,21 @@ fi
 helm upgrade --install traefik traefik --repo https://helm.traefik.io/traefik --namespace traefik --create-namespace --wait
 
 if [[ "$HYPERSCALER" == "aws" ]]; then
-    export INGRESS_HOSTNAME=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].hostname}")
-    export INGRESS_HOST=$(dig +short $INGRESS_HOSTNAME) 
+
+    gum spin --spinner line --title "Waiting for the ELB DNS to propagate..." -- sleep 30
+
+    INGRESS_HOSTNAME=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].hostname}")
+
+    INGRESS_HOST=$(dig +short $INGRESS_HOSTNAME) 
+
+    # TODO: Remove
+    gum input --placeholder "
+Is $INGRESS_HOST a single IP?"
+
 else
-    export INGRESS_HOST=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
+    INGRESS_HOST=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
 fi
 
 echo INGRESS_HOST=$INGRESS_HOST >> .env
@@ -262,22 +317,23 @@ echo INGRESS_HOST=$INGRESS_HOST >> .env
 # Setup Kubernetes #
 ####################
 
-yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" argocd/helm-values.yaml
+yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" idp-demo/argocd/helm-values.yaml
 
 export REPO_URL=$(git config --get remote.origin.url)
 
-yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" argocd/apps.yaml
+yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" idp-demo/argocd/apps.yaml
 
-yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" argocd/schema-hero.yaml
+yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" idp-demo/argocd/schema-hero.yaml
 
-kubectl apply --filename k8s/namespaces.yaml
+kubectl apply --filename idp-demo/k8s/namespaces.yaml
 
 ##############
 # Setup Port #
 ##############
 
 echo "
-Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates."
+Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates.
+Ignore the "Kubernetes catalog template setup" step (we'll set it up later)."
 
 gum input --placeholder "
 Press the enter key to continue."
@@ -292,14 +348,14 @@ Press the enter key to continue."
 # Setup GitHub Actions #
 ########################
 
-yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\"" .github/workflows/create-app-db.yaml
+yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
-yq --inplace ".on.workflow_dispatch.inputs.image-repo.default = \"docker.io/${DOCKERHUB_USER}\"" .github/workflows/create-app-db.yaml
+yq --inplace ".on.workflow_dispatch.inputs.image-repo.default = \"docker.io/${DOCKERHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
-cat port/backend-app-action.json \
+cat idp-demo/port/backend-app-action.json \
     | jq ".[0].userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
     | jq ".[0].invocationMethod.org = \"$GITHUB_ORG\"" \
-    > port/backend-app-action.json.tmp
+    > idp-demo/port/backend-app-action.json.tmp
 
 mv port/backend-app-action.json.tmp port/backend-app-action.json
 
