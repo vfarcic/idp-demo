@@ -49,17 +49,11 @@ Open "Settings" followed by "Delete this repository" and follow the instructions
 gum input --placeholder "
 Press the enter key to continue."
 
-rm -rf idp-demo idp-demo-app kubeconfig.yaml
-
 echo '
 Delete all entities and blueprints from Port.'
 
 gum input --placeholder "
 Press the enter key to continue."
-
-########################
-# Destroy Google Cloud #
-########################
 
 if [[ "$HYPERSCALER" == "google" ]]; then
 
@@ -74,3 +68,5 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
     rm -f aws-creds.conf
 
 fi
+
+rm -rf idp-demo idp-demo-app kubeconfig.yaml

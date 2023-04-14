@@ -111,7 +111,7 @@ export KUBECONFIG=$PWD/kubeconfig.yaml
 echo KUBECONFIG=$KUBECONFIG >> .env
 
 ################
-# Google Cloud #
+# Hyperscalers #
 ################
 
 if [[ "$HYPERSCALER" == "google" ]]; then
@@ -185,13 +185,7 @@ Press the enter key to continue."
 
     yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" idp-demo/eso/secret-store-google.yaml
 
-fi
-
-#######
-# AWS #
-#######
-
-if [[ "$HYPERSCALER" == "aws" ]]; then
+elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     echo
 
@@ -207,7 +201,7 @@ if [[ "$HYPERSCALER" == "aws" ]]; then
         AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID")
     fi
 
-    eksctl create cluster --config-file idp-demo/eksctl-config.yaml
+    eksctl create cluster --config-file idp-demo/eksctl-config.yaml --kubeconfig $KUBECONFIG
 
     eksctl create addon --name aws-ebs-csi-driver --cluster dot --service-account-role-arn arn:aws:iam::$AWS_ACCOUNT_ID:role/AmazonEKS_EBS_CSI_DriverRole --force
 
@@ -220,19 +214,16 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 
     kubectl --namespace crossplane-system create secret generic aws-creds --from-file creds=./aws-creds.conf
 
+    set +e
     aws secretsmanager create-secret --name production-postgresql --region us-east-1 --secret-string '{"password": "YouWillNeverFindOut"}'
+    set -e
 
     kubectl create namespace external-secrets
 
     kubectl --namespace external-secrets create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
-
+else
+    # TODO:
 fi
-
-#########
-# Azure #
-#########
-
-# TODO:
 
 ##############
 # Crossplane #
