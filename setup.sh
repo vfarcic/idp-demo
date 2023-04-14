@@ -67,10 +67,10 @@ fi
 echo
 echo
 
-GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)")
+GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)" --value $GITHUB_ORG)
 echo GITHUB_ORG=$GITHUB_ORG >> .env
 
-GITHUB_USER=$(gum input --placeholder "GitHub username")
+GITHUB_USER=$(gum input --placeholder "GitHub username" --value $GITHUB_USER)
 
 gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
 
@@ -189,17 +189,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     echo
 
-    if [[ -z "$AWS_ACCESS_KEY_ID" ]]; then
-        AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID")
-    fi
+    AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID" --value $AWS_ACCESS_KEY_ID)
     
-    if [[ -z "$AWS_SECRET_ACCESS_KEY" ]]; then
-        AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key")
-    fi
+    AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key" --value $AWS_SECRET_ACCESS_KEY --password)
 
-    if [[ -z "$AWS_ACCOUNT_ID" ]]; then
-        AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID")
-    fi
+    AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID" --value $AWS_ACCOUNT_ID)
 
     eksctl create cluster --config-file idp-demo/eksctl-config.yaml --kubeconfig $KUBECONFIG
 
@@ -222,7 +216,7 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 
     kubectl --namespace external-secrets create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
 else
-    # TODO:
+    echo "Azure is NOT supported yet."
 fi
 
 ##############
@@ -281,7 +275,7 @@ spec:
       key: creds" \
     | kubectl apply --filename -
 else
-    kubectl apply --filename crossplane-config/provider-config-$HYPERSCALER-official.yaml
+    kubectl apply --filename idp-demo/crossplane-config/provider-config-$HYPERSCALER-official.yaml
 fi
 
 #################
@@ -292,15 +286,11 @@ helm upgrade --install traefik traefik --repo https://helm.traefik.io/traefik --
 
 if [[ "$HYPERSCALER" == "aws" ]]; then
 
-    gum spin --spinner line --title "Waiting for the ELB DNS to propagate..." -- sleep 30
+    gum spin --spinner line --title "Waiting for the ELB DNS to propagate..." -- sleep 60
 
     INGRESS_HOSTNAME=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].hostname}")
 
-    INGRESS_HOST=$(dig +short $INGRESS_HOSTNAME) 
-
-    # TODO: Remove
-    gum input --placeholder "
-Is $INGRESS_HOST a single IP?"
+    INGRESS_HOST=$(dig +short $INGRESS_HOSTNAME | sed -n 1p) 
 
 else
 
@@ -330,7 +320,7 @@ kubectl apply --filename idp-demo/k8s/namespaces.yaml
 
 echo "
 Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates.
-Ignore the "Kubernetes catalog template setup" step (we'll set it up later)."
+Ignore the \"Kubernetes catalog template setup\" step (we'll set it up later)."
 
 gum input --placeholder "
 Press the enter key to continue."
@@ -354,18 +344,18 @@ cat idp-demo/port/backend-app-action.json \
     | jq ".[0].invocationMethod.org = \"$GITHUB_ORG\"" \
     > idp-demo/port/backend-app-action.json.tmp
 
-mv port/backend-app-action.json.tmp port/backend-app-action.json
+mv idp-demo/port/backend-app-action.json.tmp idp-demo/port/backend-app-action.json
 
 gh repo view --web
 
 echo "
-Open "Actions" and enable GitHub Actions."
+Open \"Actions\" and enable GitHub Actions."
 
 gum input --placeholder "
 Press the enter key to continue."
 
 ###########
-# The End #
+# The End #
 ###########
 
 gum style \
