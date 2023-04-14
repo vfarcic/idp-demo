@@ -71,4 +71,4 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
 fi
 
-rm -rf idp-demo idp-demo-app kubeconfig.yaml
+rm -rf idp-demo idp-demo-app kubeconfig.yaml .env
