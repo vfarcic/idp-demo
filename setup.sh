@@ -43,7 +43,7 @@ Which Hyperscaler do you want to use?"
 
 HYPERSCALER=$(gum choose "google" "aws" "azure")
 
-echo HYPERSCALER=$HYPERSCALER >> .env
+echo "HYPERSCALER=$HYPERSCALER" >> .env
 
 if [[ "$HYPERSCALER" == "azure" ]]; then
     gum style \
@@ -187,19 +187,25 @@ Press the enter key to continue."
 
 fi
 
-#############
-# Setup AWS #
-#############
+#######
+# AWS #
+#######
 
 if [[ "$HYPERSCALER" == "aws" ]]; then
 
     echo
 
-    AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID")
+    if [[ -z "$AWS_ACCESS_KEY_ID" ]]; then
+        AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID")
+    fi
+    
+    if [[ -z "$AWS_SECRET_ACCESS_KEY" ]]; then
+        AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key")
+    fi
 
-    AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key")
-
-    AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID")
+    if [[ -z "$AWS_ACCOUNT_ID" ]]; then
+        AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID")
+    fi
 
     eksctl create cluster --config-file idp-demo/eksctl-config.yaml
 
@@ -222,15 +228,15 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 
 fi
 
-###############
-# Setup Azure #
-###############
+#########
+# Azure #
+#########
 
 # TODO:
 
-####################
-# Setup Crossplane #
-####################
+##############
+# Crossplane #
+##############
 
 helm repo add crossplane-stable https://charts.crossplane.io/stable
 
@@ -313,9 +319,9 @@ fi
 
 echo INGRESS_HOST=$INGRESS_HOST >> .env
 
-####################
-# Setup Kubernetes #
-####################
+##############
+# Kubernetes #
+##############
 
 yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" idp-demo/argocd/helm-values.yaml
 
@@ -327,9 +333,9 @@ yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" idp-demo/argocd/schema-her
 
 kubectl apply --filename idp-demo/k8s/namespaces.yaml
 
-##############
-# Setup Port #
-##############
+########
+# Port #
+########
 
 echo "
 Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates.
@@ -344,9 +350,9 @@ Follow the instructions from https://docs.getport.io/build-your-software-catalog
 gum input --placeholder "
 Press the enter key to continue."
 
-########################
-# Setup GitHub Actions #
-########################
+##################
+# GitHub Actions #
+##################
 
 yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
