@@ -43,7 +43,7 @@ Which Hyperscaler do you want to use?"
 
 HYPERSCALER=$(gum choose "google" "aws" "azure")
 
-echo "HYPERSCALER=$HYPERSCALER" >> .env
+echo "export HYPERSCALER=$HYPERSCALER" >> .env
 
 if [[ "$HYPERSCALER" == "azure" ]]; then
     gum style \
@@ -67,10 +67,10 @@ fi
 echo
 echo
 
-GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)" --value $GITHUB_ORG)
-echo GITHUB_ORG=$GITHUB_ORG >> .env
+GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub username)" --value "$GITHUB_ORG")
+echo "export GITHUB_ORG=$GITHUB_ORG" >> .env
 
-GITHUB_USER=$(gum input --placeholder "GitHub username" --value $GITHUB_USER)
+GITHUB_USER=$(gum input --placeholder "GitHub username" --value "$GITHUB_USER")
 
 gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
 
@@ -98,7 +98,7 @@ Choose \"No\" if you already have it.
 " \
     && DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker user" --password) \
     && gh secret set DOCKERHUB_USER --body "$DOCKERHUB_USER" --org ${GITHUB_ORG}
-echo DOCKERHUB_USER=$DOCKERHUB_USER >> .env
+echo "export DOCKERHUB_USER=$DOCKERHUB_USER" >> .env
 
 gum confirm "
 We need to create GitHub secret DOCKERHUB_TOKEN.
@@ -108,7 +108,7 @@ Choose \"No\" if you already have it.
     && gh secret set DOCKERHUB_TOKEN --body "$DOCKERHUB_TOKEN" --org ${GITHUB_ORG}
 
 export KUBECONFIG=$PWD/kubeconfig.yaml
-echo KUBECONFIG=$KUBECONFIG >> .env
+echo "export KUBECONFIG=$KUBECONFIG" >> .env
 
 ################
 # Hyperscalers #
@@ -119,7 +119,7 @@ if [[ "$HYPERSCALER" == "google" ]]; then
     export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
     export PROJECT_ID=dot-$(date +%Y%m%d%H%M%S)
-    echo PROJECT_ID=${PROJECT_ID} >> .env
+    echo "export PROJECT_ID=${PROJECT_ID}" >> .env
 
     gcloud projects create ${PROJECT_ID}
 
@@ -157,7 +157,7 @@ Press the enter key to continue."
 
     export K8S_VERSION=$(gum input --placeholder "Type a valid master version from the previous output.")
 
-    echo K8S_VERSION=$K8S_VERSION >> .env
+    echo "export K8S_VERSION=$K8S_VERSION" >> .env
 
     gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 30
 
@@ -189,11 +189,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     echo
 
-    AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID" --value $AWS_ACCESS_KEY_ID)
+    AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID" --value "$AWS_ACCESS_KEY_ID")
     
-    AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key" --value $AWS_SECRET_ACCESS_KEY --password)
+    AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key" --value "$AWS_SECRET_ACCESS_KEY" --password)
 
-    AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID" --value $AWS_ACCOUNT_ID)
+    AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID" --value "$AWS_ACCOUNT_ID")
 
     eksctl create cluster --config-file idp-demo/eksctl-config.yaml --kubeconfig $KUBECONFIG
 
@@ -248,7 +248,7 @@ that its control plane is too small for it and increase its size
 automatically.' \
     '
 As a result, you might experience delays or errors like
-"connection refused" or "TLS handshake timeout2 (among others).' \
+"connection refused" or "TLS handshake timeout" (among others).' \
     '
 If that happens, wait for a while (e.g., 1h) for the control
 plane nodes to be automatically changed for larger ones.' \
@@ -298,7 +298,7 @@ else
 
 fi
 
-echo INGRESS_HOST=$INGRESS_HOST >> .env
+echo "export INGRESS_HOST=$INGRESS_HOST" >> .env
 
 ##############
 # Kubernetes #
@@ -306,7 +306,11 @@ echo INGRESS_HOST=$INGRESS_HOST >> .env
 
 yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" idp-demo/argocd/helm-values.yaml
 
+cd idp-demo
+
 export REPO_URL=$(git config --get remote.origin.url)
+
+cd ..
 
 yq --inplace ".spec.source.repoURL = \"${REPO_URL}\"" idp-demo/argocd/apps.yaml
 
@@ -320,6 +324,7 @@ kubectl apply --filename idp-demo/k8s/namespaces.yaml
 
 echo "
 Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates.
+Keep the \"Are you using ArgoCD?\" option set to \"False\".
 Ignore the \"Kubernetes catalog template setup\" step (we'll set it up later)."
 
 gum input --placeholder "
@@ -346,7 +351,7 @@ cat idp-demo/port/backend-app-action.json \
 
 mv idp-demo/port/backend-app-action.json.tmp idp-demo/port/backend-app-action.json
 
-gh repo view --web
+gh repo view --web $GITHUB_ORG/idp-demo
 
 echo "
 Open \"Actions\" and enable GitHub Actions."
