@@ -69,7 +69,7 @@ spec:
                         icon: '"Deployment"'
                         blueprint: '"backend-app"'
                         properties:
-                          url: 'https://github.com/' + .metadata.annotations.gitHubOrg + '/' + .metadata.annotations.gitHubRepo
+                          url: '"https://github.com/" + .metadata.annotations.gitHubOrg + "/" + .metadata.annotations.gitHubRepo'
                           language: '"Go"'
                           host: .spec.parameters.host
                           db-version: .spec.parameters.db.version

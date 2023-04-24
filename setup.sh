@@ -90,14 +90,14 @@ We need to create GitHub secret ORG_ADMIN_TOKEN.
 Choose \"No\" if you already have it.
 " \
     && ORG_ADMIN_TOKEN=$(gum input --placeholder "Please enter GitHub organization admin token." --password) \
-    && gh secret set ORG_ADMIN_TOKEN --body "$ORG_ADMIN_TOKEN" --org ${GITHUB_ORG}
+    && gh secret set ORG_ADMIN_TOKEN --body "$ORG_ADMIN_TOKEN" --org ${GITHUB_ORG} --visibility all
 
 gum confirm "
 We need to create GitHub secret DOCKERHUB_USER.
 Choose \"No\" if you already have it.
 " \
     && DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker user" --password) \
-    && gh secret set DOCKERHUB_USER --body "$DOCKERHUB_USER" --org ${GITHUB_ORG}
+    && gh secret set DOCKERHUB_USER --body "$DOCKERHUB_USER" --org ${GITHUB_ORG} --visibility all
 echo "export DOCKERHUB_USER=$DOCKERHUB_USER" >> .env
 
 gum confirm "
@@ -105,7 +105,7 @@ We need to create GitHub secret DOCKERHUB_TOKEN.
 Choose \"No\" if you already have it.
 " \
     && DOCKERHUB_TOKEN=$(gum input --placeholder "Please enter Docker Hub token (more info: https://docs.docker.com/docker-hub/access-tokens)." --password) \
-    && gh secret set DOCKERHUB_TOKEN --body "$DOCKERHUB_TOKEN" --org ${GITHUB_ORG}
+    && gh secret set DOCKERHUB_TOKEN --body "$DOCKERHUB_TOKEN" --org ${GITHUB_ORG} --visibility all
 
 export KUBECONFIG=$PWD/kubeconfig.yaml
 echo "export KUBECONFIG=$KUBECONFIG" >> .env
@@ -159,7 +159,7 @@ Press the enter key to continue."
 
     echo "export K8S_VERSION=$K8S_VERSION" >> .env
 
-    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 30
+    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 60
 
     gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type n1-standard-4 --num-nodes 1 --cluster-version ${K8S_VERSION} --node-version ${K8S_VERSION}
 
@@ -173,7 +173,7 @@ Press the enter key to continue."
 
     gcloud iam service-accounts --project ${PROJECT_ID} create external-secrets
 
-    echo -ne '{"password": "YouWillNeverFindOut"}' | gcloud secrets --project ${PROJECT_ID} create production-postgresql --data-file=-
+    echo '{"password": "YouWillNeverFindOut"}\c' | gcloud secrets --project ${PROJECT_ID} create production-postgresql --data-file=-
 
     gcloud secrets --project ${PROJECT_ID} add-iam-policy-binding production-postgresql --member "serviceAccount:external-secrets@${PROJECT_ID}.iam.gserviceaccount.com" --role "roles/secretmanager.secretAccessor"
 
