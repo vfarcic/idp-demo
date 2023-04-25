@@ -92,13 +92,14 @@ Choose \"No\" if you already have it.
     && ORG_ADMIN_TOKEN=$(gum input --placeholder "Please enter GitHub organization admin token." --password) \
     && gh secret set ORG_ADMIN_TOKEN --body "$ORG_ADMIN_TOKEN" --org ${GITHUB_ORG} --visibility all
 
+DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker user" --password)
+echo "export DOCKERHUB_USER=$DOCKERHUB_USER" >> .env
+
 gum confirm "
 We need to create GitHub secret DOCKERHUB_USER.
 Choose \"No\" if you already have it.
 " \
-    && DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker user" --password) \
     && gh secret set DOCKERHUB_USER --body "$DOCKERHUB_USER" --org ${GITHUB_ORG} --visibility all
-echo "export DOCKERHUB_USER=$DOCKERHUB_USER" >> .env
 
 gum confirm "
 We need to create GitHub secret DOCKERHUB_TOKEN.
@@ -189,9 +190,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     cat idp-demo/scripts/create-repo-app-db.sh | sed -e "s@google@aws@g" | tee idp-demo/scripts/create-repo-app-db.sh.tmp
     mv idp-demo/scripts/create-repo-app-db.sh.tmp idp-demo/scripts/create-repo-app-db.sh
+    cd idp-demo
     git add .
     git commit -m "AWS"
     git push
+    cd ..
 
     echo
 
@@ -295,7 +298,7 @@ helm upgrade --install traefik traefik --repo https://helm.traefik.io/traefik --
 
 if [[ "$HYPERSCALER" == "aws" ]]; then
 
-    gum spin --spinner line --title "Waiting for the ELB DNS to propagate..." -- sleep 60
+    gum spin --spinner line --title "Waiting for the ELB DNS to propagate..." -- sleep 120
 
     INGRESS_HOSTNAME=$(kubectl --namespace traefik get service traefik --output jsonpath="{.status.loadBalancer.ingress[0].hostname}")
 
