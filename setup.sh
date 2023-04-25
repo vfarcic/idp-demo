@@ -92,7 +92,7 @@ Choose \"No\" if you already have it.
     && ORG_ADMIN_TOKEN=$(gum input --placeholder "Please enter GitHub organization admin token." --password) \
     && gh secret set ORG_ADMIN_TOKEN --body "$ORG_ADMIN_TOKEN" --org ${GITHUB_ORG} --visibility all
 
-DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker user" --password)
+DOCKERHUB_USER=$(gum input --placeholder "Please enter Docker Hub user")
 echo "export DOCKERHUB_USER=$DOCKERHUB_USER" >> .env
 
 gum confirm "
