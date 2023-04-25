@@ -187,13 +187,22 @@ Press the enter key to continue."
 
 elif [[ "$HYPERSCALER" == "aws" ]]; then
 
+    cat idp-demo/scripts/create-repo-app-db.sh | sed -e "s@google@aws@g" | tee idp-demo/scripts/create-repo-app-db.sh.tmp
+    mv idp-demo/scripts/create-repo-app-db.sh.tmp idp-demo/scripts/create-repo-app-db.sh
+    git add .
+    git commit -m "AWS"
+    git push
+
     echo
 
     AWS_ACCESS_KEY_ID=$(gum input --placeholder "AWS Access Key ID" --value "$AWS_ACCESS_KEY_ID")
+    echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
     
     AWS_SECRET_ACCESS_KEY=$(gum input --placeholder "AWS Secret Access Key" --value "$AWS_SECRET_ACCESS_KEY" --password)
+    echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
 
     AWS_ACCOUNT_ID=$(gum input --placeholder "AWS Account ID" --value "$AWS_ACCOUNT_ID")
+    echo "export AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> .env
 
     eksctl create cluster --config-file idp-demo/eksctl-config.yaml --kubeconfig $KUBECONFIG
 

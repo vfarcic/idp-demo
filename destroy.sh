@@ -65,6 +65,8 @@ if [[ "$HYPERSCALER" == "google" ]]; then
 
 elif [[ "$HYPERSCALER" == "aws" ]]; then
 
+    # TODO: Delete RDS
+
     eksctl delete addon --name aws-ebs-csi-driver --cluster dot
 
     eksctl delete cluster --config-file idp-demo/eksctl-config.yaml
