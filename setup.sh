@@ -81,7 +81,7 @@ gh repo set-default ${GITHUB_ORG}/idp-demo
 cd ..
 
 gum confirm "
-We need to authorize gc CLI to manage your secrets.
+We need to authorize GitHub CLI to manage your secrets.
 Choose \"No\" if you already authorized it previously.
 " && gh auth refresh --hostname github.com --scopes admin:org
 
@@ -262,7 +262,7 @@ automatically.' \
 As a result, you might experience delays or errors like
 "connection refused" or "TLS handshake timeout" (among others).' \
     '
-If that happens, wait for a while (e.g., 1h) for the control
+So, we will wait for a while (e.g., 1h) for the control
 plane nodes to be automatically changed for larger ones.' \
     '
 This issue will soon be resolved and, when that happens, I will
