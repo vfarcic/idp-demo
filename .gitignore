@@ -1,3 +1,4 @@
 /gcp-creds.json
 /account.json
 /kubeconfig.yaml
+/.DS_Store
