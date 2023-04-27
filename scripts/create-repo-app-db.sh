@@ -1,11 +1,12 @@
 export GITHUB_TOKEN=$1
 export GITHUB_ORG=$2
 export GITHUB_USER=$3
-export APP=$4
-export IMAGE_REPO=$5
-export HOST=$6
-export DB_VERSION=$7
-export DB_SIZE=$8
+export DOCKERHUB_USER=$4
+export APP=$5
+export IMAGE_REPO=$6
+export HOST=$7
+export DB_VERSION=$8
+export DB_SIZE=$9
 
 curl -fsSL https://download.devstream.io/download.sh | bash
 chmod +x dtm

@@ -12,4 +12,4 @@ server:
     enabled: true
     ingressClassName: traefik
     hosts:
-      - gitops.34.23.58.243.nip.io
+      - gitops.34.148.194.101.nip.io
