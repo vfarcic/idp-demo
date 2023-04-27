@@ -35,6 +35,47 @@ Do you have those tools installed?
 
 source .env
 
+cd idp-demo
+
+git pull
+
+rm -rf infra/*.yaml apps/*.yaml
+
+git add .
+
+git commit -m "Destroy"
+
+git push
+
+if [[ "$HYPERSCALER" == "google" ]]; then
+
+    gcloud projects delete $PROJECT_ID
+
+    rm -f account.json gcp-creds.json gke_gcloud_auth_plugin_cache
+
+elif [[ "$HYPERSCALER" == "aws" ]]; then
+
+    gum style \
+        --foreground 212 --border-foreground 212 --border double \
+        --margin "1 2" --padding "2 4" \
+        "We need to wait until all the resources in $HYPERSCALER are destroyed." \
+        "
+    It might take a while..."
+
+    COUNTER=$(kubectl get managed | wc -l)
+
+    while [ $COUNTER -ne 0 ]; do
+        COUNTER=$(kubectl get managed | wc -l)
+    done
+
+    eksctl delete addon --name aws-ebs-csi-driver --cluster dot
+
+    eksctl delete cluster --config-file idp-demo/eksctl-config.yaml
+
+    rm -f aws-creds.conf
+
+fi
+
 gh repo view $GITHUB_ORG/idp-demo-app --web
 
 echo "
@@ -56,23 +97,5 @@ Delete all entities and blueprints from Port."
 
 gum input --placeholder "
 Press the enter key to continue."
-
-if [[ "$HYPERSCALER" == "google" ]]; then
-
-    gcloud projects delete $PROJECT_ID
-
-    rm -f account.json gcp-creds.json gke_gcloud_auth_plugin_cache
-
-elif [[ "$HYPERSCALER" == "aws" ]]; then
-
-    # TODO: Delete RDS
-
-    eksctl delete addon --name aws-ebs-csi-driver --cluster dot
-
-    eksctl delete cluster --config-file idp-demo/eksctl-config.yaml
-
-    rm -f aws-creds.conf
-
-fi
 
 rm -rf idp-demo idp-demo-app kubeconfig.yaml .env
