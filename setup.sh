@@ -182,7 +182,7 @@ Press the enter key to continue."
 
     kubectl create namespace external-secrets
 
-    kubectl --namespace external-secrets create secret generic google --from-file=credentials=account.json
+    kubectl --namespace production create secret generic google --from-file=credentials=account.json
 
     yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" idp-demo/eso/secret-store-google.yaml
 
@@ -190,6 +190,8 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     cat idp-demo/scripts/create-repo-app-db.sh | sed -e "s@google@aws@g" | tee idp-demo/scripts/create-repo-app-db.sh.tmp
     mv idp-demo/scripts/create-repo-app-db.sh.tmp idp-demo/scripts/create-repo-app-db.sh
+    cat idp-demo/argocd/port.yaml | sed -e "s@google@aws@g" | tee idp-demo/argocd/port.yaml.tmp
+    mv idp-demo/argocd/port.yaml.tmp idp-demo/argocd/port.yaml
     cd idp-demo
     git add .
     git commit -m "AWS"
@@ -226,7 +228,7 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 
     kubectl create namespace external-secrets
 
-    kubectl --namespace external-secrets create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
+    kubectl --namespace production create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
 else
     echo "Azure is NOT supported yet."
 fi
@@ -335,9 +337,8 @@ kubectl apply --filename idp-demo/k8s/namespaces.yaml
 ########
 
 echo "
-Open https://app.getport.io in a browser, register (if not already) and add the Kubernetes templates.
-Keep the \"Are you using ArgoCD?\" option set to \"False\".
-Ignore the \"Kubernetes catalog template setup\" step (we'll set it up later)."
+Open https://app.getport.io in a browser, register (if not already), click the `+ Add` button, select `Choose from template`, followed with `Map your Kubernetes ecosystem`.
+Click the `Get this template` button, keep `Are you using ArgoCD` set to `False`, and click the `Next` followed by `Done` buttons."
 
 gum input --placeholder "
 Press the enter key to continue."

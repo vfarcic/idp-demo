@@ -65,6 +65,7 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
     COUNTER=$(kubectl get managed | wc -l)
 
     while [ $COUNTER -ne 0 ]; do
+        sleep 10
         COUNTER=$(kubectl get managed | wc -l)
     done
 

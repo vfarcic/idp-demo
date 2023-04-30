@@ -76,7 +76,7 @@ spec:
                           db-size: .spec.parameters.db.size
                           labels: .metadata.labels
                         relations:
-                          environment: .metadata.name + "-" + "dot"
+                          environment: .metadata.namespace + "-" + "dot"
               - kind: v1/nodes
                 port:
                   entity:
