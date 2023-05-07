@@ -1,0 +1,19 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: AppClaim
+metadata:
+  name: silly-demo-preview
+spec:
+  id: silly-demo-preview
+  compositionSelector:
+    matchLabels:
+      type: backend-db-local
+      location: local
+  parameters:
+    namespace: preview
+    image: vfarcic/silly-demo:latest
+    port: 8080
+    host: silly-demo-preview.212.2.247.126.nip.io
+    db:
+      version: "14.0"
+      size: medium
