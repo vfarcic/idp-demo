@@ -4,7 +4,9 @@ set -e
 gum style \
 	--foreground 212 --border-foreground 212 --border double \
 	--margin "1 2" --padding "2 4" \
-	'Setup for the TODO: video.'
+	'Setup for the 
+"How To Create A Complete Internal Developer Platform (IDP)?"
+video.'
 
 gum confirm '
 Are you ready to start?
