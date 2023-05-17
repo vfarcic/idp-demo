@@ -338,15 +338,29 @@ kubectl apply --filename idp-demo/k8s/namespaces.yaml
 # Port #
 ########
 
-echo "
-Open https://app.getport.io in a browser, register (if not already), click the `+ Add` button, select `Choose from template`, followed with `Map your Kubernetes ecosystem`.
-Click the `Get this template` button, keep `Are you using ArgoCD` set to `False`, and click the `Next` followed by `Done` buttons."
+gum style \
+	--foreground 212 --border-foreground 212 --border double \
+	--margin "1 2" --padding "2 4" \
+	'1. Open https://app.getport.io in a browser
+
+2. Register (if not already).
+
+3. Click the  "+ Add" button, select  "Choose from template",
+followed with  "Map your Kubernetes ecosystem".
+
+4. Click the  "Get this template" button, keep  "Are you using
+ArgoCD" set to  "False", and click the  "Next" followed by
+ "Done" buttons.'
 
 gum input --placeholder "
 Press the enter key to continue."
 
-echo "
-Follow the instructions from https://docs.getport.io/build-your-software-catalog/sync-data-to-catalog/git/github/self-hosted-installation#register-ports-github-app to install the Port's GitHub App."
+gum style \
+	--foreground 212 --border-foreground 212 --border double \
+	--margin "1 2" --padding "2 4" \
+	'Follow the instructions from
+https://docs.getport.io/build-your-software-catalog/sync-data-to-catalog/git/github/self-hosted-installation#register-ports-github-app
+to install the Port's GitHub App."
 
 gum input --placeholder "
 Press the enter key to continue."
