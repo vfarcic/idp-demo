@@ -2,18 +2,18 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: AppClaim
 metadata:
-  name: silly-demo-preview
+  name: silly-demo
 spec:
-  id: silly-demo-preview
+  id: silly-demo-pr-123
   compositionSelector:
     matchLabels:
       type: backend-db-local
       location: local
   parameters:
-    namespace: preview
-    image: vfarcic/silly-demo:latest
+    namespace: "pr-123"
+    image: docker.io/vfarcic/silly-demo
     port: 8080
-    host: silly-demo-preview.212.2.247.126.nip.io
+    host: silly-demo-pr-123.212.2.241.39.nip.io
     db:
       version: "14.0"
       size: medium
