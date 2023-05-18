@@ -64,11 +64,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
         "
     It might take a while..."
 
-    COUNTER=$(kubectl get managed | grep -v object | wc -l)
+    COUNTER=$(kubectl get managed | grep -v object | grep -v PROVIDERCONFIG | wc -l)
 
     while [ $COUNTER -ne 0 ]; do
         sleep 10
-        COUNTER=$(kubectl get managed | grep -v object | wc -l)
+        COUNTER=$(kubectl get managed | grep -v object | grep -v PROVIDERCONFIG | wc -l)
     done
 
     eksctl delete addon --name aws-ebs-csi-driver --cluster dot
