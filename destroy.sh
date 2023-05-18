@@ -73,7 +73,7 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
 
     eksctl delete addon --name aws-ebs-csi-driver --cluster dot
 
-    eksctl delete cluster --config-file idp-demo/eksctl-config.yaml
+    eksctl delete cluster --config-file eksctl-config.yaml
 
     rm -f aws-creds.conf
 
