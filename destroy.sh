@@ -64,7 +64,7 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
         "
     It might take a while..."
 
-    COUNTER=$(kubectl get managed | wc -l)
+    COUNTER=$(kubectl get managed | grep -v object | wc -l)
 
     while [ $COUNTER -ne 0 ]; do
         sleep 10
