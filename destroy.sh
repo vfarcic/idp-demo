@@ -3,7 +3,9 @@
 gum style \
 	--foreground 212 --border-foreground 212 --border double \
 	--margin "1 2" --padding "2 4" \
-	'Destroy all the resources created for the TODO: video.'
+	'Destroy all the resources created for the
+"How To Create A Complete Internal Developer Platform (IDP)?"
+video.'
 
 gum confirm '
 Are you ready to start?
