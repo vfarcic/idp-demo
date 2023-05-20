@@ -1,0 +1,16 @@
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: previews
+  namespace: infra
+spec:
+  id: previews
+  compositionSelector:
+    matchLabels:
+      provider: civo
+      cluster: ck
+  parameters:
+    nodeSize: medium
+    minNodeCount: 1
+  writeConnectionSecretToRef:
+    name: previews-civo
