@@ -367,7 +367,7 @@ gum style \
 	--margin "1 2" --padding "2 4" \
 	'Follow the instructions from
 https://docs.getport.io/build-your-software-catalog/sync-data-to-catalog/git/github/self-hosted-installation#register-ports-github-app
-to install the Port GitHub App."
+to install the Port GitHub App.'
 
 gum input --placeholder "
 Press the enter key to continue."
