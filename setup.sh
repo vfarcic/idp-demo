@@ -74,7 +74,10 @@ echo "export GITHUB_ORG=$GITHUB_ORG" >> .env
 
 GITHUB_USER=$(gum input --placeholder "GitHub username" --value "$GITHUB_USER")
 
-gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
+gum confirm "
+Do you want to fork the vfarcic/idp-demo repository?
+Choose \"No\" if you already forked it and it's merged with upstream.
+" && gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
 
 cd idp-demo
 
@@ -184,6 +187,8 @@ Press the enter key to continue."
 
     kubectl create namespace external-secrets
 
+    kubectl create namespace production
+
     kubectl --namespace production create secret generic google --from-file=credentials=account.json
 
     yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" idp-demo/eso/secret-store-google.yaml
@@ -229,6 +234,8 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
     set -e
 
     kubectl create namespace external-secrets
+
+    kubectl create namespace production
 
     kubectl --namespace production create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
 else
