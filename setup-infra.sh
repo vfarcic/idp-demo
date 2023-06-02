@@ -19,13 +19,14 @@ Feel free to say "No" and inspect the script if you prefer setting up resources 
 
 echo "
 ## You will need following tools installed:
-|Name            |Required             |More info                                          |
-|----------------|---------------------|---------------------------------------------------|
-|Charm Gum       |Yes                  |'https://github.com/charmbracelet/gum#installation'|
-|kubectl         |Yes                  |'https://kubernetes.io/docs/tasks/tools/#kubectl'  |
-|helm            |Yes                  |'https://helm.sh/docs/intro/install/'              |
-|jq              |Yes                  |'https://stedolan.github.io/jq/download'           |
-|yq              |Yes                  |'https://github.com/mikefarah/yq#install'          |
+|Name            |More info                                          |
+|----------------|---------------------------------------------------|
+|Charm Gum       |'https://github.com/charmbracelet/gum#installation'|
+|kubectl         |'https://kubernetes.io/docs/tasks/tools/#kubectl'  |
+|helm            |'https://helm.sh/docs/intro/install/'              |
+|jq              |'https://stedolan.github.io/jq/download'           |
+|yq              |'https://github.com/mikefarah/yq#install'          |
+|Python          |'https://www.python.org/downloads'                 |
 " | gum format
 
 gum confirm "
@@ -72,9 +73,43 @@ kubectl apply --filename argocd/project.yaml
 
 yq --inplace ".spec.source.repoURL = \"https://github.com/$GITHUB_ORG/idp-demo\"" argocd/apps.yaml
 
-yq --inplace ".spec.source.repoURL = \"https://github.com/${GITHUB_ORG}/idp-demo.git\"" argocd/cluster-template.yaml
-
 kubectl apply --filename argocd/apps.yaml
+
+##################################
+# Schema Management (SchemaHero) #
+##################################
+
+cp argocd/schema-hero.yaml infra/.
+
+git add .
+
+git commit -m "Add SchemaHero"
+
+git push
+
+gum spin --spinner line --title "Waiting for SchemaHero to synchronize..." -- sleep 180
+
+#########################################
+# Secrets Management (External Secrets) #
+#########################################
+
+cp argocd/external-secrets.yaml infra/.
+
+git add . 
+
+git commit -m "External Secrets"
+
+git push
+
+gum spin --spinner line --title "Waiting for External Secrets to synchronize..." -- sleep 180
+
+cp eso/secret-store-$HYPERSCALER.yaml infra/.
+
+git add . 
+
+git commit -m "External Secrets Store"
+
+git push
 
 ########
 # Port #
@@ -91,6 +126,45 @@ cat port/cluster-delete-action.json \
     | tee port/cluster-delete-action.json.tmp
 
 mv port/cluster-delete-action.json.tmp port/cluster-delete-action.json
+
+python -m pip install requests
+
+echo '
+Execute `cat port/environment-blueprint.json`, copy the output,
+  and use it to create a new blueprint in https://app.getport.io.'
+
+gum input --placeholder "
+Press the enter key to continue."
+
+echo '
+Execute `cat port/backend-app-blueprint.json`, copy the output,
+  and use it to create a new blueprint in https://app.getport.io.'
+
+gum input --placeholder "
+Press the enter key to continue."
+
+PORT_CLIENT_ID=$(gum input --placeholder "Please enter Port client ID." --password)
+
+PORT_CLIENT_SECRET=$(gum input --placeholder "Please enter Port client secret." --password)
+
+cat argocd/port.yaml \
+    | sed -e "s@CLIENT_ID@$PORT_CLIENT_ID@g" \
+    | sed -e "s@CLIENT_SECRET@$PORT_CLIENT_SECRET@g" \
+    | tee infra/port.yaml
+
+git add .
+
+git commit -m "Port"
+
+git push
+
+echo '
+Execute `cat port/backend-app-action.json`, copy the output,
+  and use it to create a action inside the `Backend App`
+  blueprint in https://app.getport.io.'
+
+gum input --placeholder "
+Press the enter key to continue."
 
 ########
 # Repo #

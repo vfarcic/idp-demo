@@ -8,10 +8,11 @@
         "provider": {
             "type": "string",
             "title": "Provider",
-            "default": "civo",
+            "default": "n/a",
             "description": "The provider where the cluster is hosted",
             "enum": [
-                "civo"
+                "civo",
+                "n/a"
             ]
         },
         "node-size": {
@@ -30,6 +31,16 @@
           "title": "Minimum number of nodes",
           "default": 1,
           "description": "The minimun number of nodes (autoscaler might increase this number)"
+        },
+        "kube-config": {
+          "type": "string",
+          "title": "Kube config",
+          "description": "Kube config"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "description": "The status of the cluster"
         }
       },
       "required": [
@@ -43,7 +54,7 @@
       "cluster": {
         "type": "string",
         "title": "Cluster",
-        "calculation": "if .properties.provider == \"civo\" then \"ck-all\" end"
+        "calculation": "if .properties.provider == \"civo\" then \"ck-port\" end"
       }
     },
     "relations": {}

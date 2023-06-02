@@ -33,6 +33,31 @@ spec:
                       - identifier: '"dot"'
                         title: '"dot"'
                         blueprint: '"cluster"'
+                        properties:
+                          provider: '"n/a"'
+              - kind: devopstoolkitseries.com/v1alpha1/clusterclaims
+                port:
+                  entity:
+                    mappings:
+                      - identifier: .metadata.name + "-" + "cluster"
+                        title: .metadata.name + "-" + "cluster"
+                        blueprint: '"cluster"'
+                        properties:
+                          provider: .spec.compositionSelector.matchLabels.provider
+                          node-size: .spec.parameters.nodeSize
+                          min-node-count: .spec.parameters.minNodeCount
+                          status: .status.controlPlaneStatus
+              - kind: v1/secrets
+                selector:
+                  query: .type == "connection.crossplane.io/v1alpha1"
+                port:
+                  entity:
+                    mappings:
+                      - identifier: .metadata.name
+                        title: .metadata.name
+                        blueprint: '"cluster"'
+                        properties:
+                          kube-config: .data.kubeconfig
               - kind: v1/namespaces
                 selector:
                   query: .metadata.annotations.environment == "true"
