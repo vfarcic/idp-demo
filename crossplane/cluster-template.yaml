@@ -1,0 +1,15 @@
+---
+apiVersion: devopstoolkitseries.com/v1alpha1
+kind: ClusterClaim
+metadata:
+  name: NAME
+  namespace: infra
+spec:
+  id: NAME
+  compositionSelector:
+    matchLabels:
+      provider: PROVIDER
+      cluster: CLUSTER
+  parameters:
+    nodeSize: SIZE
+    minNodeCount: 1

@@ -27,6 +27,8 @@ echo "
 |gitHub CLi      |Yes                  |'https://youtu.be/BII6ZY2Rnlc'                     |
 |jq              |Yes                  |'https://stedolan.github.io/jq/download'           |
 |yq              |Yes                  |'https://github.com/mikefarah/yq#install'          |
+|kubectl         |Yes                  |'https://kubernetes.io/docs/tasks/tools/#kubectl'  |
+|helm            |Yes                  |'https://helm.sh/docs/intro/install/'              |
 |Google Cloud CLI|If using Google Cloud|'https://cloud.google.com/sdk/docs/install'        |
 |AWS CLI         |If using AWS         |'https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html'|
 |eksctl          |If using AWS         |'https://eksctl.io/introduction/#installation'     |
