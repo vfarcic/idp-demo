@@ -57,7 +57,7 @@ spec:
                         title: .metadata.name
                         blueprint: '"cluster"'
                         properties:
-                          kube-config: .data.kubeconfig
+                          kube-config: .data.kubeconfig | @base64d
               - kind: v1/namespaces
                 selector:
                   query: .metadata.annotations.environment == "true"

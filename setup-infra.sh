@@ -26,7 +26,6 @@ echo "
 |helm            |'https://helm.sh/docs/intro/install/'              |
 |jq              |'https://stedolan.github.io/jq/download'           |
 |yq              |'https://github.com/mikefarah/yq#install'          |
-|Python          |'https://www.python.org/downloads'                 |
 " | gum format
 
 gum confirm "
@@ -127,18 +126,22 @@ cat port/cluster-delete-action.json \
 
 mv port/cluster-delete-action.json.tmp port/cluster-delete-action.json
 
-python -m pip install requests
+cat port/environment-blueprint.json
 
-echo '
-Execute `cat port/environment-blueprint.json`, copy the output,
-  and use it to create a new blueprint in https://app.getport.io.'
+echo "
+Copy the JSON output, and use it to create a new blueprint in
+https://app.getport.io.
+"
 
 gum input --placeholder "
 Press the enter key to continue."
 
-echo '
-Execute `cat port/backend-app-blueprint.json`, copy the output,
-  and use it to create a new blueprint in https://app.getport.io.'
+cat backend-app-blueprint.json
+
+echo "
+Copy the JSON output, and use it to create a new blueprint in
+https://app.getport.io.
+"
 
 gum input --placeholder "
 Press the enter key to continue."
@@ -158,10 +161,14 @@ git commit -m "Port"
 
 git push
 
+sleep 1
+
+cat port/backend-app-action.json
+
 echo '
-Execute `cat port/backend-app-action.json`, copy the output,
-  and use it to create a action inside the `Backend App`
-  blueprint in https://app.getport.io.'
+Copy the JSON output, and use it to create action inside the
+`Backend App` blueprint in https://app.getport.io.
+'
 
 gum input --placeholder "
 Press the enter key to continue."

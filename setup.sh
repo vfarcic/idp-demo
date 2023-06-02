@@ -202,9 +202,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
     cat idp-demo/argocd/port.yaml | sed -e "s@google@aws@g" | tee idp-demo/argocd/port.yaml.tmp
     mv idp-demo/argocd/port.yaml.tmp idp-demo/argocd/port.yaml
     cd idp-demo
+    set +e
     git add .
     git commit -m "AWS"
     git push
+    set -e
     cd ..
 
     echo
