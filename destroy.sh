@@ -62,13 +62,13 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
         --margin "1 2" --padding "2 4" \
         "We need to wait until all the resources in $HYPERSCALER are destroyed." \
         "
-    It might take a while..."
+It might take a while..."
 
-    COUNTER=$(kubectl get managed | grep -v object | grep -v PROVIDERCONFIG | wc -l)
+    COUNTER=$(kubectl get aws | grep -v NAME | grep -v providerconfig | wc -l)
 
     while [ $COUNTER -ne 0 ]; do
         sleep 10
-        COUNTER=$(kubectl get managed | grep -v object | grep -v PROVIDERCONFIG | wc -l)
+        COUNTER=$(kubectl get aws | grep -v NAME | grep -v providerconfig | wc -l)
     done
 
     eksctl delete addon --name aws-ebs-csi-driver --cluster dot
