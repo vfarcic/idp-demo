@@ -126,6 +126,10 @@ cat port/cluster-delete-action.json \
 
 mv port/cluster-delete-action.json.tmp port/cluster-delete-action.json
 
+echo
+echo
+echo
+
 cat port/environment-blueprint.json
 
 echo "
@@ -136,7 +140,7 @@ https://app.getport.io.
 gum input --placeholder "
 Press the enter key to continue."
 
-cat backend-app-blueprint.json
+cat port/backend-app-blueprint.json
 
 echo "
 Copy the JSON output, and use it to create a new blueprint in
@@ -160,8 +164,6 @@ git add .
 git commit -m "Port"
 
 git push
-
-sleep 1
 
 cat port/backend-app-action.json
 
