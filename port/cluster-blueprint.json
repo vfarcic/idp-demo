@@ -1,0 +1,61 @@
+{
+    "identifier": "cluster",
+    "description": "This blueprint represents a Kubernetes Cluster",
+    "title": "Cluster",
+    "icon": "Cluster",
+    "schema": {
+      "properties": {
+        "provider": {
+            "type": "string",
+            "title": "Provider",
+            "default": "n/a",
+            "description": "The provider where the cluster is hosted",
+            "enum": [
+                "civo",
+                "n/a"
+            ]
+        },
+        "node-size": {
+            "type": "string",
+            "title": "Node Size",
+            "default": "small",
+            "description": "The size of the nodes",
+            "enum": [
+                "small",
+                "medium",
+                "large"
+              ]
+          },
+        "min-node-count": {
+          "type": "number",
+          "title": "Minimum number of nodes",
+          "default": 1,
+          "description": "The minimun number of nodes (autoscaler might increase this number)"
+        },
+        "kube-config": {
+          "type": "string",
+          "title": "Kube config",
+          "description": "Kube config"
+        },
+        "status": {
+          "type": "string",
+          "title": "Status",
+          "description": "The status of the cluster"
+        }
+      },
+      "required": [
+        "provider",
+        "node-size",
+        "min-node-count"
+      ]
+    },
+    "mirrorProperties": {},
+    "calculationProperties": {
+      "cluster": {
+        "type": "string",
+        "title": "Cluster",
+        "calculation": "if .properties.provider == \"civo\" then \"ck-port\" end"
+      }
+    },
+    "relations": {}
+  }

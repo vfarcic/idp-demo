@@ -1,0 +1,46 @@
+name: Create a cluster
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        required: true
+        description: "The name of the cluster"
+      provider:
+        required: true
+        description: "The provider where the cluster is hosted"
+        default: "civo"
+      cluster:
+        required: true
+        description: "The type of the cluster"
+        default: "ck-all"
+      node-size:
+        required: true
+        description: "The size of the nodes"
+        default: "small"
+      min-node-count:
+        required: true
+        description: "The minnimun number of nodes (autoscaler might increase this number)"
+        default: "1"
+jobs:
+  deploy-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Create cluster
+        run: |
+          chmod +x scripts/create-cluster.sh
+          ./scripts/create-cluster.sh ${{ inputs.name }} ${{ inputs.provider }} ${{ inputs.cluster }} ${{ inputs.node-size }} ${{ inputs.min-node-count }}
+      - name: Commit changes
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Create cluster ${{ inputs.name }}"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

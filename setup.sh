@@ -27,6 +27,8 @@ echo "
 |GitHub CLI      |Yes                  |'https://youtu.be/BII6ZY2Rnlc'                     |
 |jq              |Yes                  |'https://stedolan.github.io/jq/download'           |
 |yq              |Yes                  |'https://github.com/mikefarah/yq#install'          |
+|kubectl         |Yes                  |'https://kubernetes.io/docs/tasks/tools/#kubectl'  |
+|helm            |Yes                  |'https://helm.sh/docs/intro/install/'              |
 |Google Cloud CLI|If using Google Cloud|'https://cloud.google.com/sdk/docs/install'        |
 |AWS CLI         |If using AWS         |'https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html'|
 |eksctl          |If using AWS         |'https://eksctl.io/introduction/#installation'     |
@@ -74,7 +76,10 @@ echo "export GITHUB_ORG=$GITHUB_ORG" >> .env
 
 GITHUB_USER=$(gum input --placeholder "GitHub username" --value "$GITHUB_USER")
 
-gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
+gum confirm "
+Do you want to fork the vfarcic/idp-demo repository?
+Choose \"No\" if you already forked it and it's merged with upstream.
+" && gh repo fork vfarcic/idp-demo --clone --remote --org ${GITHUB_ORG}
 
 cd idp-demo
 
@@ -184,6 +189,8 @@ Press the enter key to continue."
 
     kubectl create namespace external-secrets
 
+    kubectl create namespace production
+
     kubectl --namespace production create secret generic google --from-file=credentials=account.json
 
     yq --inplace ".spec.provider.gcpsm.projectID = \"${PROJECT_ID}\"" idp-demo/eso/secret-store-google.yaml
@@ -195,9 +202,11 @@ elif [[ "$HYPERSCALER" == "aws" ]]; then
     cat idp-demo/argocd/port.yaml | sed -e "s@google@aws@g" | tee idp-demo/argocd/port.yaml.tmp
     mv idp-demo/argocd/port.yaml.tmp idp-demo/argocd/port.yaml
     cd idp-demo
+    set +e
     git add .
     git commit -m "AWS"
     git push
+    set -e
     cd ..
 
     echo
@@ -229,6 +238,8 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
     set -e
 
     kubectl create namespace external-secrets
+
+    kubectl create namespace production
 
     kubectl --namespace production create secret generic aws --from-literal access-key-id=$AWS_ACCESS_KEY_ID --from-literal secret-access-key=$AWS_SECRET_ACCESS_KEY
 else

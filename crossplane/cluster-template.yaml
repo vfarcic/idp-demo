@@ -2,14 +2,14 @@
 apiVersion: devopstoolkitseries.com/v1alpha1
 kind: ClusterClaim
 metadata:
-  name: previews
+  name: NAME
   namespace: infra
 spec:
-  id: previews
+  id: NAME
   compositionSelector:
     matchLabels:
-      provider: civo
-      cluster: ck-all
+      provider: PROVIDER
+      cluster: CLUSTER
   parameters:
-    nodeSize: medium
+    nodeSize: SIZE
     minNodeCount: 1

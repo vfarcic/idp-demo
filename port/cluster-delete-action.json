@@ -1,0 +1,25 @@
+{
+  "identifier": "delete-cluster",
+  "title": "Delete the cluster",
+  "userInputs": {
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name",
+        "description": "Confirm by typing the name of the cluster"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
+  "invocationMethod": {
+    "type": "GITHUB",
+    "org": "vfarcic",
+    "repo": "idp-demo",
+    "workflow": "delete-cluster.yaml",
+    "omitPayload": true
+  },
+  "trigger": "DELETE",
+  "description": "Delete the cluster."
+}
