@@ -75,6 +75,7 @@ GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub use
 echo "export GITHUB_ORG=$GITHUB_ORG" >> .env
 
 GITHUB_USER=$(gum input --placeholder "GitHub username" --value "$GITHUB_USER")
+echo "export GITHUB_USER=$GITHUB_USER" >> .env
 
 gum confirm "
 Do you want to fork the vfarcic/idp-demo repository?
