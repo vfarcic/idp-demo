@@ -259,36 +259,17 @@ helm upgrade --install crossplane crossplane-stable/crossplane --namespace cross
 
 kubectl apply --filename idp-demo/crossplane-config/provider-kubernetes-incluster.yaml
 
+kubectl apply --filename idp-demo/crossplane-config/provider-helm-incluster.yaml
+
+kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
+
 kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-kubectl apply --filename idp-demo/crossplane-config/provider-$HYPERSCALER-official.yaml
-
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
 if [[ "$HYPERSCALER" == "google" ]]; then
-    gum style --foreground 212 --border-foreground 212 --border double --margin "1 2" --padding "2 4" \
-        'GKE starts with a very small control plane.' \
-        '
-Since a lot of CRDs were installed, GKE is likely going to detect
-that its control plane is too small for it and increase its size
-automatically.' \
-    '
-As a result, you might experience delays or errors like
-"connection refused" or "TLS handshake timeout" (among others).' \
-    '
-So, we will wait for a while (e.g., 90 minutes) for the control
-plane nodes to be automatically changed for larger ones.' \
-    '
-This issue will soon be resolved and, when that happens, I will
-remove this message and the sleep command that follows.' \
-    '
-Grab a cup of coffee and watch an episode of your favorite
-series on Netflix.'
-
-    gum spin --spinner line --title "Waiting for GKE control plane nodes to resize (1h approx.)..." -- sleep 5400
-
     echo "apiVersion: gcp.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:

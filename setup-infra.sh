@@ -38,8 +38,6 @@ Do you have those tools installed?
 
 kubectl apply --filename crossplane-config/config-kubernetes.yaml
 
-kubectl apply --filename crossplane-config/provider-civo.yaml
-
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
 CIVO_TOKEN=$(gum input --placeholder "Please enter Civo (https://civo.com) token." --password --value "$CIVO_TOKEN")
