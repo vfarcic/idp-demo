@@ -162,7 +162,7 @@ Press the enter key to continue."
 
     gcloud iam service-accounts keys create gcp-creds.json --project ${PROJECT_ID} --iam-account $SA
 
-    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --no-enable-autoupgrade
+    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --no-enable-autoupgrade --enable-autoscaling --min-nodes=1 --max-nodes=6
 
     gcloud container clusters get-credentials dot --project ${PROJECT_ID} --region us-east1
 
