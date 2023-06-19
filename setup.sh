@@ -164,13 +164,9 @@ Press the enter key to continue."
 
     gcloud container get-server-config --region us-east1
 
-    export K8S_VERSION=$(gum input --placeholder "Type a valid master version from the previous output.")
-
-    echo "export K8S_VERSION=$K8S_VERSION" >> .env
-
     gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 60
 
-    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type n1-standard-4 --num-nodes 1 --cluster-version ${K8S_VERSION} --node-version ${K8S_VERSION}
+    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --no-enable-autoupgrade
 
     gcloud container clusters get-credentials dot --project ${PROJECT_ID} --region us-east1
 
