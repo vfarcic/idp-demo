@@ -14,7 +14,7 @@ spec:
     targetRevision: 0.1.13
     helm:
       releaseName: port-k8s-exporter
-      values: |-
+      values: |
         installCRDs: true
         secret:
           secrets:
@@ -22,7 +22,6 @@ spec:
             portClientSecret: CLIENT_SECRET
         configMap:
           name: config-k8s.yaml
-          # config: |-
           config:
             resources:
               - kind: v1/namespaces
