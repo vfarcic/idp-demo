@@ -162,11 +162,7 @@ Press the enter key to continue."
 
     gcloud iam service-accounts keys create gcp-creds.json --project ${PROJECT_ID} --iam-account $SA
 
-    gcloud container get-server-config --region us-east1
-
-    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 60
-
-    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --no-enable-autoupgrade
+    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-8 --num-nodes 1 --no-enable-autoupgrade
 
     gcloud container clusters get-credentials dot --project ${PROJECT_ID} --region us-east1
 
@@ -263,7 +259,7 @@ kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-gum spin --spinner line --title "Waiting for GKE to stabilize (20 minutes)..." -- sleep 1200
+gum spin --spinner line --title "Waiting for GKE to stabilize (10 minutes)..." -- sleep 600
 
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
