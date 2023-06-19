@@ -263,6 +263,8 @@ kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
+gum spin --spinner line --title "Waiting for GKE to stabilize (20 minutes)..." -- sleep 1200
+
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
 if [[ "$HYPERSCALER" == "google" ]]; then
@@ -337,9 +339,11 @@ gum style \
 3. Click the  "+ Add" button, select  "Choose from template",
 followed with  "Map your Kubernetes ecosystem".
 
-4. Click the  "Get this template" button, keep  "Are you using
-ArgoCD" set to  "False", and click the  "Next" followed by
- "Done" buttons.'
+4. Select the "Builder" page.
+
+5. Click the  "Get this template" button, keep  "Are you using
+ArgoCD" set to  "False", and click the  "Next" button, ignore
+the instructions to run a script and click the "Done" button.'
 
 gum input --placeholder "
 Press the enter key to continue."
@@ -363,8 +367,8 @@ yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\
 yq --inplace ".on.workflow_dispatch.inputs.image-repo.default = \"docker.io/${DOCKERHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
 cat idp-demo/port/backend-app-action.json \
-    | jq ".[0].userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
-    | jq ".[0].invocationMethod.org = \"$GITHUB_ORG\"" \
+    | jq ".userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
+    | jq ".invocationMethod.org = \"$GITHUB_ORG\"" \
     > idp-demo/port/backend-app-action.json.tmp
 
 mv idp-demo/port/backend-app-action.json.tmp idp-demo/port/backend-app-action.json
