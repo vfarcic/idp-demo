@@ -259,7 +259,7 @@ kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-gum spin --spinner line --title "Waiting for GKE to stabilize (10 minutes)..." -- sleep 600
+gum spin --spinner line --title "Waiting for GKE to stabilize (1 minute)..." -- sleep 60
 
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
