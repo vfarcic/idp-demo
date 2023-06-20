@@ -11,7 +11,7 @@ spec:
   source:
     chart: port-k8s-exporter
     repoURL: https://port-labs.github.io/helm-charts
-    targetRevision: 0.1.13
+    targetRevision: 0.1.17
     helm:
       releaseName: port-k8s-exporter
       values: |
