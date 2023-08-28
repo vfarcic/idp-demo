@@ -11,7 +11,7 @@ spec:
   source:
     chart: port-k8s-exporter
     repoURL: https://port-labs.github.io/helm-charts
-    targetRevision: 0.1.17
+    targetRevision: 0.1.13
     helm:
       releaseName: port-k8s-exporter
       values: |
@@ -35,6 +35,18 @@ spec:
                         blueprint: '"cluster"'
                         properties:
                           provider: '"n/a"'
+              - kind: devopstoolkitseries.com/v1alpha1/clusterclaims
+                port:
+                  entity:
+                    mappings:
+                      - identifier: .metadata.name + "-" + "cluster"
+                        title: .metadata.name + "-" + "cluster"
+                        blueprint: '"cluster"'
+                        properties:
+                          provider: .spec.compositionSelector.matchLabels.provider
+                          node-size: .spec.parameters.nodeSize
+                          min-node-count: .spec.parameters.minNodeCount
+                          status: .status.controlPlaneStatus
               - kind: v1/secrets
                 selector:
                   query: .type == "connection.crossplane.io/v1alpha1"

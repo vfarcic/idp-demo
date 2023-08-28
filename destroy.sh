@@ -81,8 +81,13 @@ fi
 
 gh repo view $GITHUB_ORG/idp-demo-app --web
 
-echo "
-Open \"Settings\" followed by \"Delete this repository\" and follow the instructions to remove the forked repository."
+echo '
+Open "Settings" followed by "Delete this repository" and follow
+  the instructions to remove the forked repository.
+If the repo did not open in a browser and you got the
+  "Could not resolve to a Repository" message, the repo was
+  probably not created in the first place and you can ignore
+  this step and press the enter key to continue.'
 
 gum input --placeholder "
 Press the enter key to continue."

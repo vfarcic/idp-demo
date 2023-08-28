@@ -24,7 +24,7 @@ echo "
 |Name            |Required             |More info                                          |
 |----------------|---------------------|---------------------------------------------------|
 |Charm Gum       |Yes                  |'https://github.com/charmbracelet/gum#installation'|
-|gitHub CLi      |Yes                  |'https://youtu.be/BII6ZY2Rnlc'                     |
+|GitHub CLI      |Yes                  |'https://youtu.be/BII6ZY2Rnlc'                     |
 |jq              |Yes                  |'https://stedolan.github.io/jq/download'           |
 |yq              |Yes                  |'https://github.com/mikefarah/yq#install'          |
 |kubectl         |Yes                  |'https://kubernetes.io/docs/tasks/tools/#kubectl'  |
@@ -75,6 +75,7 @@ GITHUB_ORG=$(gum input --placeholder "GitHub organization (do NOT use GitHub use
 echo "export GITHUB_ORG=$GITHUB_ORG" >> .env
 
 GITHUB_USER=$(gum input --placeholder "GitHub username" --value "$GITHUB_USER")
+echo "export GITHUB_USER=$GITHUB_USER" >> .env
 
 gum confirm "
 Do you want to fork the vfarcic/idp-demo repository?
@@ -161,15 +162,7 @@ Press the enter key to continue."
 
     gcloud iam service-accounts keys create gcp-creds.json --project ${PROJECT_ID} --iam-account $SA
 
-    gcloud container get-server-config --region us-east1
-
-    export K8S_VERSION=$(gum input --placeholder "Type a valid master version from the previous output.")
-
-    echo "export K8S_VERSION=$K8S_VERSION" >> .env
-
-    gum spin --spinner line --title "Waiting for the container API to be enabled..." -- sleep 60
-
-    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --cluster-version ${K8S_VERSION} --node-version ${K8S_VERSION}
+    gcloud container clusters create dot --project ${PROJECT_ID} --region us-east1 --machine-type e2-standard-4 --num-nodes 1 --no-enable-autoupgrade --enable-autoscaling --min-nodes=1 --max-nodes=6
 
     gcloud container clusters get-credentials dot --project ${PROJECT_ID} --region us-east1
 
@@ -258,36 +251,19 @@ helm upgrade --install crossplane crossplane-stable/crossplane --namespace cross
 
 kubectl apply --filename idp-demo/crossplane-config/provider-kubernetes-incluster.yaml
 
+kubectl apply --filename idp-demo/crossplane-config/provider-helm-incluster.yaml
+
+kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
+
 kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-kubectl apply --filename idp-demo/crossplane-config/provider-$HYPERSCALER-official.yaml
+gum spin --spinner line --title "Waiting for GKE to stabilize (1 minute)..." -- sleep 60
 
 kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
 
 if [[ "$HYPERSCALER" == "google" ]]; then
-    gum style --foreground 212 --border-foreground 212 --border double --margin "1 2" --padding "2 4" \
-        'GKE starts with a very small control plane.' \
-        '
-Since a lot of CRDs were installed, GKE is likely going to detect
-that its control plane is too small for it and increase its size
-automatically.' \
-    '
-As a result, you might experience delays or errors like
-"connection refused" or "TLS handshake timeout" (among others).' \
-    '
-So, we will wait for a while (e.g., 1h) for the control
-plane nodes to be automatically changed for larger ones.' \
-    '
-This issue will soon be resolved and, when that happens, I will
-remove this message and the sleep command that follows.' \
-    '
-Grab a cup of coffee and watch an episode of your favorite
-series on Netflix.'
-
-    gum spin --spinner line --title "Waiting for GKE control plane nodes to resize (1h approx.)..." -- sleep 3600
-
     echo "apiVersion: gcp.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
@@ -359,9 +335,11 @@ gum style \
 3. Click the  "+ Add" button, select  "Choose from template",
 followed with  "Map your Kubernetes ecosystem".
 
-4. Click the  "Get this template" button, keep  "Are you using
-ArgoCD" set to  "False", and click the  "Next" followed by
- "Done" buttons.'
+4. Select the "Builder" page.
+
+5. Click the  "Get this template" button, keep  "Are you using
+ArgoCD" set to  "False", and click the  "Next" button, ignore
+the instructions to run a script and click the "Done" button.'
 
 gum input --placeholder "
 Press the enter key to continue."
@@ -385,8 +363,8 @@ yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\
 yq --inplace ".on.workflow_dispatch.inputs.image-repo.default = \"docker.io/${DOCKERHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
 cat idp-demo/port/backend-app-action.json \
-    | jq ".[0].userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
-    | jq ".[0].invocationMethod.org = \"$GITHUB_ORG\"" \
+    | jq ".userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
+    | jq ".invocationMethod.org = \"$GITHUB_ORG\"" \
     > idp-demo/port/backend-app-action.json.tmp
 
 mv idp-demo/port/backend-app-action.json.tmp idp-demo/port/backend-app-action.json

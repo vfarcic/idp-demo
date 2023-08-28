@@ -1,3 +1,4 @@
 # Demo Manifests And Application Used In DevOps Toolkit Videos
 
-* [How To Create A "Proper" CLI With Shell And Charm Gum](https://youtu.be/U8zCHA-9VLA)
+* [How To Create A Complete Internal Developer Platform (IDP)?](https://youtu.be/Rg98GoEHBd4)
+* [Internal Developer Platform (IDP) For Infrastructure](https://youtu.be/UnNQYghc8uU)
