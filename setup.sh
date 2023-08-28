@@ -332,10 +332,10 @@ gum style \
 
 2. Register (if not already).
 
-3. Click the  "+ Add" button, select  "Choose from template",
-followed with  "Map your Kubernetes ecosystem".
+3. Select the "Builder" page.
 
-4. Select the "Builder" page.
+4. Click the "+ Add" button, select  "Choose from template",
+followed with  "Map your Kubernetes ecosystem".
 
 5. Click the  "Get this template" button, keep  "Are you using
 ArgoCD" set to  "False", and click the  "Next" button, ignore
