@@ -259,9 +259,9 @@ kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-gum spin --spinner line --title "Waiting for GKE to stabilize (1 minute)..." -- sleep 60
+gum spin --spinner line --title "Waiting for the cluster to stabilize (1 minute)..." -- sleep 60
 
-kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
+kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=600s
 
 if [[ "$HYPERSCALER" == "google" ]]; then
     echo "apiVersion: gcp.upbound.io/v1beta1
