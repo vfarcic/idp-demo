@@ -1,3 +1,4 @@
+[
   {
     "identifier": "create-backend-db",
     "title": "Create Backend App With DB",
@@ -73,3 +74,4 @@
     "trigger": "CREATE",
     "description": "Create a new backend application with a DB."
   }
+]
