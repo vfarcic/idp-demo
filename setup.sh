@@ -366,8 +366,8 @@ yq --inplace ".on.workflow_dispatch.inputs.repo-user.default = \"${GITHUB_USER}\
 yq --inplace ".on.workflow_dispatch.inputs.image-repo.default = \"docker.io/${DOCKERHUB_USER}\"" idp-demo/.github/workflows/create-app-db.yaml
 
 cat idp-demo/port/backend-app-action.json \
-    | jq ".userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
-    | jq ".invocationMethod.org = \"$GITHUB_ORG\"" \
+    | jq "[0].userInputs.properties.\"repo-org\".default = \"$GITHUB_ORG\"" \
+    | jq "[0].invocationMethod.org = \"$GITHUB_ORG\"" \
     > idp-demo/port/backend-app-action.json.tmp
 
 mv idp-demo/port/backend-app-action.json.tmp idp-demo/port/backend-app-action.json
