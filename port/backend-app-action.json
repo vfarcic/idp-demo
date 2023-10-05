@@ -6,7 +6,7 @@
       "properties": {
         "repo-org": {
           "type": "string",
-          "title": "Repo User",
+          "title": "Repo Org",
           "default": "devopsparadox"
         },
         "repo-user": {
