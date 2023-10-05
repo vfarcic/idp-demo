@@ -125,7 +125,8 @@ echo "export KUBECONFIG=$KUBECONFIG" >> .env
 
 if [[ "$HYPERSCALER" == "google" ]]; then
 
-    export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+    # export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+    gcloud components install gke-gcloud-auth-plugin
 
     export PROJECT_ID=dot-$(date +%Y%m%d%H%M%S)
     echo "export PROJECT_ID=${PROJECT_ID}" >> .env
