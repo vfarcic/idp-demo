@@ -260,9 +260,9 @@ kubectl apply --filename idp-demo/crossplane-config/config-sql.yaml
 
 kubectl apply --filename idp-demo/crossplane-config/config-app.yaml
 
-gum spin --spinner line --title "Waiting for GKE to stabilize (1 minute)..." -- sleep 60
+gum spin --spinner line --title "Waiting for the cluster to stabilize (1 minute)..." -- sleep 60
 
-kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=300s
+kubectl wait --for=condition=healthy provider.pkg.crossplane.io --all --timeout=600s
 
 if [[ "$HYPERSCALER" == "google" ]]; then
     echo "apiVersion: gcp.upbound.io/v1beta1
@@ -333,10 +333,10 @@ gum style \
 
 2. Register (if not already).
 
-3. Click the  "+ Add" button, select  "Choose from template",
-followed with  "Map your Kubernetes ecosystem".
+3. Select the "Builder" page.
 
-4. Select the "Builder" page.
+4. Click the "+ Add" button, select  "Choose from template",
+followed with  "Map your Kubernetes ecosystem".
 
 5. Click the  "Get this template" button, keep  "Are you using
 ArgoCD" set to  "False", and click the  "Next" button, ignore
