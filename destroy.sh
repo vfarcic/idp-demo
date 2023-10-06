@@ -71,6 +71,8 @@ It might take a while..."
         COUNTER=$(kubectl get aws | grep -v NAME | grep -v providerconfig | wc -l)
     done
 
+    export AWS_DEFAULT_REGION=us-east-1
+
     eksctl delete addon --name aws-ebs-csi-driver --cluster dot
 
     eksctl delete cluster --config-file eksctl-config.yaml
