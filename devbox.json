@@ -10,7 +10,8 @@
     "kubernetes-helm@3.14.4",
     "google-cloud-sdk@467.0.0",
     "awscli2@2.15.38",
-    "eksctl@0.176.0"
+    "eksctl@0.176.0",
+    "teller@1.5.6"
   ],
   "shell": {
     "init_hook": [
