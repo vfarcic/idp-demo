@@ -3,4 +3,4 @@ kind: Provider
 metadata:
   name: provider-github
 spec:
-  package: xpkg.upbound.io/coopnorge/provider-github:v0.3.2
+  package: xpkg.upbound.io/coopnorge/provider-github:v0.10.0
