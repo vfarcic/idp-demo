@@ -310,7 +310,11 @@ echo "export INGRESS_HOST=$INGRESS_HOST" >> .env
 # Kubernetes #
 ##############
 
-yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" idp-demo/argocd/helm-values.yaml
+yq --inplace \
+    ".global.domain = \"gitops.${INGRESS_HOST}.nip.io\"" \
+    idp-demo/argocd/helm-values.yaml
+
+# yq --inplace ".server.ingress.hosts[0] = \"gitops.${INGRESS_HOST}.nip.io\"" idp-demo/argocd/helm-values.yaml
 
 cd idp-demo
 
@@ -333,16 +337,7 @@ gum style \
 	--margin "1 2" --padding "2 4" \
 	'1. Open https://app.getport.io in a browser
 
-2. Register (if not already).
-
-3. Select the "Builder" page.
-
-4. Click the "+ Add" button, select  "Choose from template",
-followed with  "Map your Kubernetes ecosystem".
-
-5. Click the  "Get this template" button, keep  "Are you using
-ArgoCD" set to  "False", and click the  "Next" button, ignore
-the instructions to run a script and click the "Done" button.'
+2. Register (if not already).'
 
 gum input --placeholder "
 Press the enter key to continue."

@@ -1,14 +1,16 @@
+global:
+  domain: argocd.127.0.0.1.nip.io
 configs:
   secret:
     argocdServerAdminPassword: "$2a$10$m3eTlEdRen0nS86c5Zph5u/bDFQMcWZYdG3NVdiyaACCqoxLJaz16"
     argocdServerAdminPasswordMtime: "2021-11-08T15:04:05Z"
   cm:
     application.resourceTrackingMethod: annotation
+  params:
+    "server.insecure": true
 server:
   extraArgs:
     - --insecure
   ingress:
     enabled: true
     ingressClassName: traefik
-    hosts:
-      - argocd.212.2.246.1.nip.io
